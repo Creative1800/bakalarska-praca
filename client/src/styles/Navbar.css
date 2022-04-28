@@ -1,0 +1,46 @@
+.navbar {
+  width: 100%;
+  background-color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.navbar-context {
+  max-width: 1400px;
+  width: 90%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar--user--info {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.navbar--user--avatar {
+  width: 3.5em;
+  margin-right: 1em;
+  border-radius: 50%;
+}
+
+.navbar--user--name {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.navbar--sign-out--button {
+  width: 150px;
+  height: 2.5rem;
+
+  background-color: var(--secondary);
+  color: var(--white);
+  font-size: 1.2rem;
+  font-weight: 500;
+  border: 2px solid var(--white);
+  border-radius: 25px;
+}
+

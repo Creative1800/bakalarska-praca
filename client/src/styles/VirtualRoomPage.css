@@ -1,0 +1,30 @@
+.vr--page {
+  border: 2px solid red;
+  max-width: 1400px;
+  width: 90%;
+  min-height: 90vh;
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
+}
+
+.vr--info {
+  border: 2px solid blue;
+}
+
+.vr--main {
+  border: 2px solid var(--secondary);
+}
+
+.vr--active--users {
+  border: 2px solid green;
+}
+
+.vr--main--question {
+  border: 2px solid red;
+  min-height: 30%;
+}
+
+.vr--main--solution {
+  border: 2px solid blue;
+  min-height: 70%;
+}

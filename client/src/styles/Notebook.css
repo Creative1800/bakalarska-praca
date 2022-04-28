@@ -1,0 +1,48 @@
+.notebook {
+  max-width: 248px;
+  min-height: 300px;  /* original notebook size is 400px height */
+  width: 100%;    /* original notebook size is 348px width */
+  background-image: url("../assets/notebook1.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 2em 1em;
+}
+
+.notebook--context {
+  padding-top: 32px;
+  padding-left: 1.5em;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notebook--h2 {
+  margin-bottom: .51em;
+  
+  color: var(--secondary);
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+
+.notebook--p {
+  font-weight: 500;
+  margin-bottom: 1.30em;
+  font-size: .85rem;
+}
+
+.notebook--p3 {
+  color: red;
+  margin-bottom: 2.8em;
+}
+
+.notebook--button {
+  width: 70%;
+  height: 2rem;
+
+  background-color: var(--white);
+  color: var(--primary);
+  font-weight: 700;
+  border: 3px solid var(--primary);
+  border-radius: 25px;
+}
