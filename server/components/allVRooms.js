@@ -16,9 +16,12 @@ client.connect();
 router.get("/", (req, res) => {
   client.query(`SELECT * FROM virtual_rooms`, 
   (error, response) => {
-    console.log(response.rows)
     res.send(response.rows)
   })
 })
+
+
+
+client.end;
 
 module.exports = router

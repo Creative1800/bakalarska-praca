@@ -23,10 +23,9 @@ router.post("/", (req, res) => {
     if(err) {
       res.send({err: err});
     }
-
     client.query(
-      `INSERT INTO students (username, password) 
-      VALUES ('${username}','${hash}')
+      `INSERT INTO students (username, password, virtual_room) 
+      VALUES ('${username}','${hash}', null)
       ON CONFLICT (username) DO NOTHING`,
       (err, result) => {
         if(result.rowCount > 0){

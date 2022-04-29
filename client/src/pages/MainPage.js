@@ -14,6 +14,8 @@ const MainPage = (props) => {
       setVRoomData(response.data);
     })
   }, [])
+
+  
   
   
   const notebook = vRoomData.map(item => {

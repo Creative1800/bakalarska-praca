@@ -8,7 +8,9 @@ const session = require('express-session');
 
 const loginRoute = require("./components/login");
 const registerRoute = require("./components/register");
-const virtualroomRoute = require("./components/virtual_room");
+const allVRoomsRoute = require("./components/allVRooms");
+const activeUsersRoute = require("./components/activeUsers");
+const questionRoute = require("./components/question");
 
 const app = express();
 
@@ -35,7 +37,9 @@ app.use(session({
 
 app.use("/login", loginRoute);
 app.use("/register", registerRoute);
-app.use("/virtualrooms", virtualroomRoute);
+app.use("/virtualrooms", allVRoomsRoute);
+app.use("/activeusers", activeUsersRoute);
+app.use("/question", questionRoute);
 
 app.listen(3001, () => {
   console.log("running on port 3001");

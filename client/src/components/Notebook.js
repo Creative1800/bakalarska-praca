@@ -1,9 +1,11 @@
-import React from 'react';
-import '../styles/App.css';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Axios from 'axios';
+import '../styles/App.css';
 
 const Notebook = (props) => {
   let navigate = useNavigate();
+  const [username, setUsername] = useState('');
   const startDate = new Date(props.startTime).toLocaleDateString('uk');
   const startTime = new Date(props.startTime);
   
@@ -12,7 +14,26 @@ const Notebook = (props) => {
   const startDateTime = `${startDate} ${startTime.getHours()}:${startTime.getMinutes()}`; 
   const endDateTime = `${endDate} ${endTime.getHours()}:${endTime.getMinutes()}`; 
  
+  useEffect(() => {
+    Axios.get("http://localhost:3001/login")
+    .then((response) => {
+      if (response.data.loggedIn === true){
+        setUsername(response.data.user)
+      } 
+    })
+  }, [])
 
+  const addActiveUser = () => {
+    if (username != '') {
+      Axios.post("http://localhost:3001/activeusers/1", {
+        user: username,
+        vRoomId: props.id
+      })
+      navigate(`/virtualroom/${props.id}`);
+    } else {
+      alert("Prihlaste sa!")
+    }
+  }
   
   return (
     <div className='notebook' >
@@ -21,9 +42,11 @@ const Notebook = (props) => {
         <p className='notebook--p notebook--p1' >{startDateTime}</p>
         <p className='notebook--p notebook--p2' >{endDateTime}</p>
         <p className='notebook--p notebook--p3' >Neodoslané</p>
-        <button onClick={() => {
-          navigate(`/virtualroom/${props.id}`)
-        }} className='notebook--button'>Vstúpiť do testu</button>
+        <button 
+          onClick={() => {
+            addActiveUser()
+          }} 
+          className='notebook--button'>Vstúpiť do testu</button>
       </div>
     </div>
   )
