@@ -27,7 +27,7 @@ const ActiveUsers = (props) => {
 
   return (
     <div className='vr--active--users' >
-      <h2 className='active--users--header'>Aktívni študenti</h2>
+      <h5 className='active--users--header'>Aktívni študenti</h5>
       {activeUser}
     </div>
   )

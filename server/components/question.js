@@ -31,15 +31,12 @@ router.post("/", (req, res) => {
   (error, response) => {
     if(response) {
       const questionContent = getQuestionsContent(res, response.rows[0].questions)
-
-      console.log(questionContent)
     }
     //res.send(response.rows[0].questions)
   })
 })
 
 const getQuestionsContent = (res, questionIds) => {
-  console.log(questionIds)
   let returnData = ''
   client.query(
     `SELECT question_content
@@ -50,7 +47,6 @@ const getQuestionsContent = (res, questionIds) => {
       })
     })`,
   (error, response) => {
-    console.log(response.rows)
     res.send(response.rows)
   })
 

@@ -3,6 +3,10 @@
 @import "./Notebook.css";
 @import "./VirtualRoomPage.css";
 @import "./ActiveUsers.css";
+@import "./TestInfo.css";
+@import "./Question.css";
+@import "./Solution.css";
+@import "./Input.css";
 
 
 * {

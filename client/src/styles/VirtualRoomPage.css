@@ -1,25 +1,26 @@
 .vr--page {
   max-width: 1400px;
   width: 90%;
-  min-height: 87vh;
+  
   margin-top: 3vh;
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
 }
 
-.vr--info {
-  border: 2px solid blue;
+.vr--main {
+  border-radius: 0 0 5px 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px 0;
+  margin: 0 1em;
+  padding: 1em 1.5em;
 }
 
 .vr--main--question {
-  border: 2px solid red;
-  min-height: 30%;
+  /* border: 2px solid red; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  min-height: 10vh;
 }
 
-.vr--main--solution {
-  border: 2px solid blue;
-  min-height: 70%;
-}
+
 
 /* .lds-ring {
   display: inline-block;

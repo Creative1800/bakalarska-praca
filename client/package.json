@@ -2,6 +2,7 @@
   "name": "bakalarska-praca",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://drive.google.com:8000",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.3",
     "@testing-library/react": "^12.1.4",
