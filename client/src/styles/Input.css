@@ -32,10 +32,15 @@
   
 }
 
+.input--img--inserted {
+  cursor: pointer;
+}
+
 
 /* ---------------------------------------- */
 
 .input--modal {
+  transform: scale(1);
   height: 250px;
   width: 350px;
   position: absolute;
@@ -85,3 +90,7 @@
   border: 6px solid transparent;
   background-clip: content-box;
 }
+
+
+/* ------------------------------------------------ */
+

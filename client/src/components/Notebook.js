@@ -29,7 +29,7 @@ const Notebook = (props) => {
         user: username,
         vRoomId: props.id
       })
-      navigate(`/virtualroom/${props.id}`);
+      navigate(`/virtualroom/${props.id}`, {state:{username: username}});
     } else {
       alert("Prihlaste sa!")
     }

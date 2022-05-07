@@ -1,32 +1,61 @@
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
-import { useNavigate, useParams} from 'react-router-dom'
-import ActiveUsers from '../components/ActiveUsers';
-import InputModal from '../components/InputModal';
+import { useParams, useHistory, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar';
-import Question from '../components/Question';
-import Solution from '../components/Solution';
-import TestInfo from '../components/TestInfo';
+import VRoomContent from '../components/VRoomContent';
 import '../styles/App.css';
+import { io } from 'socket.io-client' 
 
-const VirtualRoomPage = (props) => {
+const VirtualRoomPage = ({ route, navigation }) => {
   const params = useParams();
-  const [questionNumber, setQuestionNumber] = useState(0);
+
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [vRoomData, setVRoomData] = useState();
+  //const [currentVRoom, setCurrentVRoom] = useState();
+
   const [questCount, setQuestCount] = useState(0);
   const [isLoading, setLoading] = useState(true);
 
-  const [isModalOpened, setIsModalOpened] = useState(false);
-  const [ modalPositions, setModalPositions ] = useState([])
-  const [ picNameFromModal, setPicNameFromModal ] = useState('');
-  const [ inputId, setInputId ] = useState();
+
+  const socket = io('http://localhost:5000')
+  
+  var input = navigator.onLine ;
+  //console.log(window.location.href, params.id, input)
+
+  /* useEffect(() => {
+    const getData = async () => {
+      const res = await Axios.get("http://localhost:3001/login");
+      console.log(res)
+    };
+  }, []); */
+
+  /* window.addEventListener('popstate', function (event) {
+    socket.emit(
+      'questionChange', { 
+        user: "user", 
+        vRoomId: params.id
+      })
+  }); */
+  
+  useEffect(()=> {
+    socket.on('questionChange', function(data) {
+      if(data.vRoomId === params.id) {
+        setCurrentQuestion(data.current_question)
+      }
+    })
+    /* socket.on('connect', ()=>console.log(socket.id))
+    socket.on('connect_error', ()=>{
+      setTimeout(()=>socket.connect(),5000)
+    })
+    socket.on('time', (data)=>setTime(data))
+    socket.on('disconnect',()=>setTime('server disconnected')) */
+    
+  },[])
+
+
 
   let picsArray = [];
-
-  
-
-
 
   useEffect(() => {
     Axios.post("http://localhost:3001/question",{
@@ -38,33 +67,91 @@ const VirtualRoomPage = (props) => {
       setQuestCount(response.data.length)
     })
   }, [])
-
-  if(isLoading) {
-    return (
-      <div className='vr--main--question'>
-        
-      </div>
-    )
-  }
-
-  const toggleModal = (bottomPosition, leftPosition, inputId) => {
-    setIsModalOpened(prevState => !prevState)
-    setModalPositions([leftPosition, bottomPosition]);
-    setInputId(inputId)
-  }
-
-  const getPicNameIdFromModal = (name, id) => {
-    setPicNameFromModal([name, id])
-    picsArray[id] = name
-    console.log(name, id, picsArray)
-  }
   
-  function addQuestNumber() {
-    setQuestionNumber(prevCount => (prevCount < questCount - 1)  ? prevCount + 1 : prevCount)
+  useEffect(() => {
+    Axios.post("http://localhost:3001/vroom",{
+      id: params.id
+    })
+    .then((response) => {
+      setCurrentQuestion(response.data[0].current_question)
+    })
+  }, [])
+
+  
+  
+
+    if(isLoading) {
+      return (
+        <div className='vr--main--question'>
+          
+        </div>
+      )
+    }
+
+  let shuffledArrayOfPictograms = [];
+  if(vRoomData[currentQuestion]) {
+    for(let i = 0; i < vRoomData[currentQuestion].question_content.content.length; i++) {
+      shuffledArrayOfPictograms[i] = vRoomData[currentQuestion].question_content.content[i].pic
+    }
   }
+
+
+  const randomModalImages = (array)=>{
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    let uniqueChars = [];
+    array.forEach((c) => {
+      if (!uniqueChars.includes(c)) {
+          uniqueChars.push(c);
+      }
+    });
+    shuffledArrayOfPictograms = uniqueChars
+  }
+
+  randomModalImages(shuffledArrayOfPictograms)
+
+  const addPicsArray = (id, name) => {
+    picsArray[id] = name
+  }
+
+
+  
+  function  addQuestNumber() {
+    if( currentQuestion < questCount - 1) {
+      Axios.post("http://localhost:3001/vroom/cq",{
+        id: params.id,
+        currentQuestion: currentQuestion + 1
+      })
+      .then((response) => {
+        setCurrentQuestion(response.data[0].current_question)
+        socket.emit(
+          'questionChange', { 
+            current_question: response.data[0].current_question, 
+            vRoomId: params.id
+          })
+      })
+    }
+  }
+
 
   function subQuestNumber() {
-    setQuestionNumber(prevCount => prevCount > 0 ? prevCount - 1 : prevCount)
+    if( currentQuestion > 0 ) {
+      Axios.post("http://localhost:3001/vroom/cq",{
+        id: params.id,
+        currentQuestion: currentQuestion - 1
+      })
+      .then((response) => {
+        setCurrentQuestion(response.data[0].current_question)
+
+        socket.emit(
+          'questionChange', { 
+            current_question: response.data[0].current_question, 
+            vRoomId: params.id
+          })
+      })
+    }
   }
 
 
@@ -75,42 +162,16 @@ const VirtualRoomPage = (props) => {
         <button onClick={subQuestNumber}>predchazajuca otazka</button>
         <button onClick={addQuestNumber}>dalsia otazka</button>
       </div>
-      <div className='vr--page'>
-        <TestInfo 
-          currentQuestion={questionNumber}
-          questionCount={questCount}
-        />
-        
-        <main className='vr--main'>
-          <Question
-            questionNumber={questionNumber}
-            questionContent={vRoomData[questionNumber].question_content}
-          /> 
-          { isModalOpened ?
-            <InputModal  
-              piktogramList={vRoomData[questionNumber].question_content.content}
-              isModalOpened={isModalOpened}
-              toggleModal={toggleModal}
-              modalPositions={modalPositions}
-              getPicNameIdFromModal={getPicNameIdFromModal}
-              inputId={inputId}
-              
-            />
-            : <></>
-          }
-          <Solution
-            toggleModal={toggleModal}
-            addQuestNumber={addQuestNumber} 
-            questionNumber={questionNumber}
-            questionContent={vRoomData[questionNumber].question_content}
-            picNameFromModal={picNameFromModal}
-            picsArray={picsArray}
-          />
-        </main>
-        <ActiveUsers  
-          id={params.id}
-        />
-      </div>
+      <VRoomContent 
+        currentQuestion={currentQuestion}
+        questCount={questCount}
+        vRoomData={vRoomData}
+        addQuestNumber={addQuestNumber}
+        vRoomId={params.id}
+        addPicsArray={addPicsArray}
+        picsArray={picsArray}
+        shuffledArrayOfPictograms={shuffledArrayOfPictograms}
+      />
     </div>
   )
 }

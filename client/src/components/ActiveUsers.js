@@ -5,8 +5,6 @@ import '../styles/App.css';
 const ActiveUsers = (props) => {
   const [responseData, setResponseData] = useState({data: []});
 
-
-
   useEffect(() => {
     const  interval = setInterval(async () => {
       await Axios.post("http://localhost:3001/activeusers", {
@@ -19,6 +17,8 @@ const ActiveUsers = (props) => {
     }, 3000);
     return () => clearInterval(interval);
   }, []); 
+
+  
 
   let activeUser = []
   if(responseData.data.length > 0) {

@@ -39,10 +39,10 @@ const InputModal = (props) => {
       <img  
             key={picCounter}
             className='input--modal--img' 
-            src={require(`../assets/piktograms/${item.pic}.png`)} 
+            src={require(`../assets/piktograms/${item}.png`)} 
             onClick={
               () => {
-                props.getPicNameIdFromModal(item.pic, props.inputId);
+                props.getPicNameIdFromModal(item, props.inputId);
                 props.toggleModal()
               }
             }
