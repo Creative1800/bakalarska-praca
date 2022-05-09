@@ -1,43 +1,54 @@
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
-import { useParams, useHistory, useNavigate } from 'react-router-dom'
+import { useParams, useHistory, useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar';
 import VRoomContent from '../components/VRoomContent';
 import '../styles/App.css';
-import { io } from 'socket.io-client' 
+import { socket } from '../App'
 
-const VirtualRoomPage = ({ route, navigation }) => {
+
+const VirtualRoomPage = () => {
   const params = useParams();
+  const navigate = useNavigate();
+  
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [vRoomData, setVRoomData] = useState();
+  //const [socket, setSocket] = useState(null)
   //const [currentVRoom, setCurrentVRoom] = useState();
 
   const [questCount, setQuestCount] = useState(0);
   const [isLoading, setLoading] = useState(true);
 
 
-  const socket = io('http://localhost:5000')
   
   var input = navigator.onLine ;
   //console.log(window.location.href, params.id, input)
-
-  /* useEffect(() => {
-    const getData = async () => {
-      const res = await Axios.get("http://localhost:3001/login");
-      console.log(res)
-    };
-  }, []); */
-
-  /* window.addEventListener('popstate', function (event) {
-    socket.emit(
-      'questionChange', { 
-        user: "user", 
-        vRoomId: params.id
-      })
-  }); */
   
+  // ----------------------------------------------
+
+  const [room, setRoom] = useState((params.id).toString());
+  const [users, updateUsers] = useState([])
+  const [ username, setUsername ] = useState("")
+
+  // Messages States
+  const [message, setMessage] = useState("");
+  const [messageReceived, setMessageReceived] = useState("");
+
+  
+
+  const sendMessage = () => {
+    socket.emit("send_message", { message, room });
+  };
+
+  useEffect(() => {
+    socket.on("receive_message", (data) => {
+      console.log("received")
+      setMessageReceived(data.message);
+    });
+  }, [socket]);
+
   useEffect(()=> {
     socket.on('questionChange', function(data) {
       if(data.vRoomId === params.id) {
@@ -53,7 +64,20 @@ const VirtualRoomPage = ({ route, navigation }) => {
     
   },[])
 
+  useEffect(() => {
+    socket.on("joined", (data) => {
+      updateUsers(data.users);
+      setUsername(data.username)
+      console.log(data)
+    })
+  },[socket])
 
+  window.addEventListener("beforeunload", function (event) {
+    console.log("unload has begun", event) 
+  });
+
+  // ----------------------------------------------
+  
 
   let picsArray = [];
 
@@ -77,16 +101,17 @@ const VirtualRoomPage = ({ route, navigation }) => {
     })
   }, [])
 
-  
+
   
 
-    if(isLoading) {
-      return (
-        <div className='vr--main--question'>
-          
-        </div>
-      )
-    }
+  if(isLoading) {
+    return (
+      <div className='vr--main--question'>
+        
+      </div>
+    )
+  }
+
 
   let shuffledArrayOfPictograms = [];
   if(vRoomData[currentQuestion]) {
@@ -129,8 +154,8 @@ const VirtualRoomPage = ({ route, navigation }) => {
         socket.emit(
           'questionChange', { 
             current_question: response.data[0].current_question, 
-            vRoomId: params.id
-          })
+            room
+        })
       })
     }
   }
@@ -148,10 +173,18 @@ const VirtualRoomPage = ({ route, navigation }) => {
         socket.emit(
           'questionChange', { 
             current_question: response.data[0].current_question, 
-            vRoomId: params.id
-          })
+            room
+        })
       })
     }
+  }
+
+  const handleNavigate = () => {
+    socket.emit("left_room", { 
+      room: (params.id).toString(), 
+      username: username
+    });
+    navigate("/")
   }
 
 
@@ -159,6 +192,7 @@ const VirtualRoomPage = ({ route, navigation }) => {
     <div className='page'>
       <Navbar />
       <div>
+        <button onClick={handleNavigate}>Domov</button>
         <button onClick={subQuestNumber}>predchazajuca otazka</button>
         <button onClick={addQuestNumber}>dalsia otazka</button>
       </div>
@@ -171,6 +205,7 @@ const VirtualRoomPage = ({ route, navigation }) => {
         addPicsArray={addPicsArray}
         picsArray={picsArray}
         shuffledArrayOfPictograms={shuffledArrayOfPictograms}
+        activeUsers={users}
       />
     </div>
   )

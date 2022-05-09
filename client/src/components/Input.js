@@ -8,10 +8,9 @@ import '../styles/InputModal.scss';
 
 const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
-  const socket = io('http://localhost:5000')
 
   
-  useEffect(() => {
+  /* useEffect(() => {
 
   
     if(props.isInputInteracted) {
@@ -39,7 +38,7 @@ const Input = (props) => {
         console.log("not interacted")
       }
     }
-  }, [])
+  }, []) */
   
   
   /* if (props.picsArray && props.picsArray[props.id] !== undefined) {

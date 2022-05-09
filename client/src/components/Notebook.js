@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import '../styles/App.css';
+import { socket } from '../App'
 
 const Notebook = (props) => {
   let navigate = useNavigate();
+  
   const [username, setUsername] = useState('');
   const startDate = new Date(props.startTime).toLocaleDateString('uk');
   const startTime = new Date(props.startTime);
@@ -30,10 +32,21 @@ const Notebook = (props) => {
         vRoomId: props.id
       })
       navigate(`/virtualroom/${props.id}`, {state:{username: username}});
+
+      joinRoom()
     } else {
       alert("Prihlaste sa!")
     }
   }
+
+  const joinRoom = () => {
+    if ((props.id).toString() !== "") {
+      socket.emit("join_room", { 
+        room: (props.id).toString(), 
+        username: username
+      });
+    }
+  };
   
   return (
     <div className='notebook' >

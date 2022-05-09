@@ -1,8 +1,6 @@
 import '../styles/App.css';
 import Input from './Input';
 import React, { useEffect, useState } from 'react'
-import { io } from 'socket.io-client';
-import { Axios } from 'axios';
 
 const Solution = (props) => {
   let inputCounter = -1;
@@ -13,10 +11,9 @@ const Solution = (props) => {
   const [isInputEmpty, setIsInputEmpty] = useState(false)
   const [isInputInteracted, setIsInputInteracted ] = useState([])
 
-  const socket = io('http://localhost:5000')
 
 
-  useEffect(()=> {
+  /* useEffect(()=> {
     socket.emit("USER_ONLINE", props.username);
 
     socket.on('inputClick', function(data) {
@@ -30,7 +27,7 @@ const Solution = (props) => {
         updateSolutionArray(data.solutionArray)
       }
     })    
-  },[socket, props.username])
+  },[socket, props.username]) */
   
   const handleChange = (id, inputValue) => {
     //solutionArray[id] = inputValue;
@@ -50,7 +47,7 @@ const Solution = (props) => {
         }
   });
 
-  const updateInputValue = (id) => {
+  /* const updateInputValue = (id) => {
     socket.emit(
       'inputChange', { 
         inputId: id, 
@@ -58,7 +55,7 @@ const Solution = (props) => {
         picsArray: props.picsArray,
         solutionArray: solutionArray  
     })
-  }
+  } */
 
   const checkSolutions = () => {
     const areArraysSame = compareArrays();
@@ -115,7 +112,6 @@ const Solution = (props) => {
         isInputInteracted={isInputInteracted[inputCounter]}
         username={props.username}
         solutionArray={solutionArray[inputCounter]}
-        updateInputValue={updateInputValue}
         />
         )
   })
@@ -136,11 +132,11 @@ const Solution = (props) => {
       } 
     }) */
     //console.log(isInputInteracted)
-    socket.emit(
+    /* socket.emit(
       'inputClick', { 
         inputId: id, 
         isInputInteracted: isInputInteracted
-    })
+    }) */
   }
       
 

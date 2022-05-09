@@ -5,7 +5,7 @@ import '../styles/App.css';
 const ActiveUsers = (props) => {
   const [responseData, setResponseData] = useState({data: []});
 
-  useEffect(() => {
+  /* useEffect(() => {
     const  interval = setInterval(async () => {
       await Axios.post("http://localhost:3001/activeusers", {
         id: props.id
@@ -16,14 +16,20 @@ const ActiveUsers = (props) => {
       }) 
     }, 3000);
     return () => clearInterval(interval);
-  }, []); 
+  }, []);  */
 
-  
+  console.log("tu", props.activeUsers.length)
 
   let activeUser = []
-  if(responseData.data.length > 0) {
-    activeUser = responseData.data.map(item => <p key={item.username}>{item.username}</p> )
-  }  
+  useEffect(() => {
+    console.log("tuuuuu")
+    if(props.activeUsers.length > 0) {
+    
+      activeUser = props.activeUsers.map(item => <p key={item.id}>{item.username}</p> )
+      //activeUser = responseData.data.map(item => <p key={item.username}>{item.username}</p> )
+    }
+  }, [activeUser])
+    
 
   return (
     <div className='vr--active--users' >

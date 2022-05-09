@@ -77,6 +77,7 @@ const VRoomContent = (props) => {
         </main>
         <ActiveUsers  
           id={props.vRoomId}
+          activeUsers={props.activeUsers}
         />
       </div>
   )
