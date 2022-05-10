@@ -5,7 +5,6 @@ import { socket } from '../App'
 
 const Solution = (props) => {
   let inputCounter = -1;
-  //let solutionArray = []
   const [solutionArray, updateSolutionArray ] = useState([])
   let correctSolutionCounter = 0;
   let correctSolutionArray = [];
@@ -17,8 +16,8 @@ const Solution = (props) => {
   useEffect(()=> {
 
     socket.on('inputClick', function(data) {
-      console.log(data, "tu")
-      if(data.isInputInteracted[data.inputId].vRoomId === props.vRoomId) {
+      if(data.isInputInteracted[data.inputId].room === (props.vRoomId).toString()) {
+        console.log(data, "tu")
         setIsInputInteracted(data.isInputInteracted) 
       }
     })
@@ -28,7 +27,23 @@ const Solution = (props) => {
         updateSolutionArray(data.solutionArray)
       }
     })    
-  },[])
+  },[isInputInteracted])
+
+  function handleInputClick(id, booleanValue) {
+    let newArr = [...isInputInteracted];
+    newArr[id] = {
+      username: props.username,
+      isInteracted: booleanValue,
+      room: (props.vRoomId).toString(),
+    };
+    setIsInputInteracted(newArr);
+
+    socket.emit(
+      'inputClick', { 
+        inputId: id, 
+        isInputInteracted: newArr
+    })
+  }
   
   const handleChange = (id, inputValue) => {
     let newArr = [...solutionArray];
@@ -48,6 +63,7 @@ const Solution = (props) => {
   });
 
   const updateInputValue = (id) => {
+    console.log(id, 'inputChange')
     socket.emit(
       'inputChange', { 
         inputId: id, 
@@ -91,37 +107,7 @@ const Solution = (props) => {
     return true
   }
 
-  function handleInputClick(id, booleanValue) {
-    let newArr = [...isInputInteracted];
-    newArr[id] = {
-      username: props.username,
-      isInteracted: booleanValue,
-      room: (props.vRoomId).toString(),
-    };
-    setIsInputInteracted(newArr);
-
-    /* isInputInteracted[id] = {
-      username: props.username,
-      isInteracted: booleanValue,
-      room: (props.vRoomId).toString(),
-    } */ 
-    console.log(booleanValue)
-    console.log(isInputInteracted)
-    /* Axios.post("http://localhost:3001/inputfield/update", {
-      
-    })
-    .then((response) => {
-      if (response.data.loggedIn === true){
-        setUsername(response.data.user)
-      } 
-    }) */
-    //console.log(isInputInteracted)
-    socket.emit(
-      'inputClick', { 
-        inputId: id, 
-        isInputInteracted: newArr
-    })
-  }
+  
 
   const questionData = props
   .questionContent

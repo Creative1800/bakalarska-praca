@@ -1,89 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { io } from 'socket.io-client';
-//http://drive.google.com/uc?export=view&id=
-//import boy from 'https://drive.google.com/thumbnail?id=13UDr1YS4exhtovTEAbOOImnMVylZ_cQW'
-/* https://drive.google.com/file/d/13UDr1YS4exhtovTEAbOOImnMVylZ_cQW/view?usp=sharing */
 import insertImage from '../assets/1.png';
 import '../styles/InputModal.scss';
 
 const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
 
-  
+ 
   useEffect(() => {
+    const el = document.getElementsByClassName('input--input')
 
-  
+    if(el[props.id]) {
+      el[props.id].onblur = function() { // input if not focused
+        props.handleInputClick(props.id, false)
+        props.updateInputValue(props.id)
+      };
+    
+      el[props.id].onfocus = function() { // input if focused
+        props.handleInputClick(props.id, true)
+      };
+    }
+    
+  }, [])
+
+  useEffect(() => {
     if(props.isInputInteracted) {
-      const el = document.getElementsByClassName("input--input");
-      //console.log(props.isInputInteracted)
       if( props.isInputInteracted.isInteracted && 
         props.isInputInteracted.username === props.username) {
-          setDisabledInput(false)
-          console.log("interacted by me", 
-            props.id, 
-            props.isInputInteracted.isInteracted,
-            props.isInputInteracted.username,
-            props.username)
-          
+          setDisabledInput(false) // interacted by me
       } else if(props.isInputInteracted.isInteracted && 
         props.isInputInteracted.username !== props.username) {
-          setDisabledInput(true)
-        console.log("interacted by somebody else", 
-          props.id, 
-          props.isInputInteracted.isInputInteracted,
-          props.isInputInteracted.username,
-          props.username)
+          setDisabledInput(true) // interacte by somebody else
       } else if(!props.isInputInteracted.isInteracted) {
-          setDisabledInput(false)
-        console.log("not interacted")
+          setDisabledInput(false) // not interacted
       }
     }
-  }, [])
-  
-  
-  /* if (props.picsArray && props.picsArray[props.id] !== undefined) {
-    props.handleChange(props.id, props.picsArray[props.id]);
-  } */
-  
- 
-  
-
-  /* useEffect(() => {}, []) */
-  /* if(props.isInputInteracted) {
-    const el = document.getElementsByClassName("input--input");
-    document.addEventListener('click', function(event) {
-      if(!el || !el[props.id]) return
-      var isClickInsideElement = el[props.id].contains(event.target);
-      if (!isClickInsideElement && props.isInputInteracted.username === props.username) {
-        console.log(isClickInsideElement, el[props.id].contains(event.target))
-        console.log('ttt')
-        props.updateInputValue(props.id)          
-      }
-    });
-  } */
-  useEffect(() => {
-
-    const el = document.getElementsByClassName('input--input')
-    if(el[props.id]) {
-      el[props.id].onblur = function() {
-        [props.id].style.background = "white";
-        props.handleInputClick(props.id, false)
-        console.log("not focused")
-    };
-    
-    el[props.id].onfocus = function() {
-      el[props.id].style.background = "blue";
-      props.handleInputClick(props.id, true)
-      console.log("focused")
-    };
-    }
-    console.log("isinputInteracted: ", props.isInputInteracted)
-  }, [])
-
-  useEffect(() => {
-
-    console.log("isinputInteracted: ", props.isInputInteracted)
-  }, [])
+  }, [props.isInputInteracted])
   
   const getInputValue = (event)=>{
     const inputValue = event.target.value;
@@ -124,18 +75,16 @@ const Input = (props) => {
           src={require(`../assets/piktograms/${props.inputContent.pic}.png`)} 
           alt="piktogram" 
         />
-        {props.isInputInteracted ? props.isInputInteracted.username : null}
-        { props.solutionArray !== undefined ?
+        { disabledInput ?
           <input 
-          onChange={getInputValue} 
           defaultValue={props.solutionArray}
-          /* onClick={() => props.handleInputClick(props.id, true)}  */ 
+          disabled={true}
           className='input--input' 
           />
           :
           <input 
-          onChange={getInputValue} 
-          /* onClick={() => props.handleInputClick(props.id, true)}  */ 
+          onChange={getInputValue}
+          disabled={false}
           className='input--input' 
           />
         }
@@ -146,4 +95,3 @@ const Input = (props) => {
 }
 
 export default Input
-//<img className='input--img' src={image} />
