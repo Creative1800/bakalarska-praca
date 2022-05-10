@@ -1,5 +1,4 @@
 import React from 'react';
-import { BrowserRouter as Router}  from 'react-router-dom';
 import Views from './components/views.jsx'
 import './styles/App.css';
 import './styles/custom.scss';
@@ -9,15 +8,14 @@ export const socket = io.connect("http://localhost:5000");
 
 
 function App() {
-
   return (
-    <Router>
-      <Views />
-    </Router>
-  );
-}
-
+    <Views />
+    );
+  }
+  
 export default App;
+  {/* <Router> */}
+    /* </Router> */
 
 /* <div className="d-flex justify-content-center align-items-center vh-100 ">
   <Register />

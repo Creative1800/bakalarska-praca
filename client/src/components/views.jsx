@@ -1,4 +1,5 @@
-import { Route, Routes }  from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigate }  from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import MainPage from '../pages/MainPage';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -7,6 +8,14 @@ import VirtualRoomPage from '../pages/VirtualRoomPage';
 import ProtectedRoutes from './ProtectedRoutes';
 
 const Views = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.pathname.substring(0, location.pathname.lastIndexOf('/')) == "/virtualroom") {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <Routes>
@@ -14,7 +23,7 @@ const Views = () => {
         <Route path="/login" element={<LoginPage  />} /> 
         <Route element={<ProtectedRoutes />}>
           <Route 
-            path="/" 
+            exact path="/" 
             element={<MainPage />} 
           /> 
           <Route 

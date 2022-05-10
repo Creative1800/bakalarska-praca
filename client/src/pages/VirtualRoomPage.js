@@ -8,87 +8,59 @@ import '../styles/App.css';
 import { socket } from '../App'
 
 
-const VirtualRoomPage = () => {
+const VirtualRoomPage = (props) => {
   const params = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  let picsArray = [];
   
-
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [vRoomData, setVRoomData] = useState();
-  //const [socket, setSocket] = useState(null)
-  //const [currentVRoom, setCurrentVRoom] = useState();
 
   const [questCount, setQuestCount] = useState(0);
   const [isLoading, setLoading] = useState(true);
-
-
-  
-  var input = navigator.onLine ;
-  //console.log(window.location.href, params.id, input)
-  
-  // ----------------------------------------------
 
   const [room, setRoom] = useState((params.id).toString());
   const [users, updateUsers] = useState([])
   const [ username, setUsername ] = useState("")
 
-  // Messages States
-  const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
-
-  
-
-  const sendMessage = () => {
-    socket.emit("send_message", { message, room });
-  };
-
-  useEffect(() => {
-    socket.on("receive_message", (data) => {
-      console.log("received")
-      setMessageReceived(data.message);
-    });
-  }, [socket]);
-
   useEffect(()=> {
-    socket.on('questionChange', function(data) {
-      if(data.vRoomId === params.id) {
+    socket.on('questionChanged', function(data) {
+      if(data.room === (params.id).toString()) {
         setCurrentQuestion(data.current_question)
       }
-    })
-    /* socket.on('connect', ()=>console.log(socket.id))
-    socket.on('connect_error', ()=>{
-      setTimeout(()=>socket.connect(),5000)
-    })
-    socket.on('time', (data)=>setTime(data))
-    socket.on('disconnect',()=>setTime('server disconnected')) */
-    
+    })  
   },[])
 
   useEffect(() => {
+    let isMounted = true;
     socket.on("joined", (data) => {
-      updateUsers(data.users);
-      setUsername(data.username)
-      console.log(data)
+      if(isMounted){
+        updateUsers(data.users);
+        setUsername(location.state.username)
+      } 
     })
+
+    return () => {
+      isMounted = false;
+    };
   },[socket])
 
   window.addEventListener("beforeunload", function (event) {
-    console.log("unload has begun", event) 
+    socket.emit("left_room", { 
+      room: (params.id).toString(), 
+      username: username
+    });
   });
-
-  // ----------------------------------------------
-  
-
-  let picsArray = [];
 
   useEffect(() => {
     Axios.post("http://localhost:3001/question",{
       id: params.id
     })
     .then((response) => {
-      setVRoomData(response.data);
-      setLoading(false)
-      setQuestCount(response.data.length)
+        setVRoomData(response.data);
+        setLoading(false)
+        setQuestCount(response.data.length)
     })
   }, [])
   
@@ -100,9 +72,6 @@ const VirtualRoomPage = () => {
       setCurrentQuestion(response.data[0].current_question)
     })
   }, [])
-
-
-  
 
   if(isLoading) {
     return (
@@ -141,8 +110,6 @@ const VirtualRoomPage = () => {
     picsArray[id] = name
   }
 
-
-  
   function  addQuestNumber() {
     if( currentQuestion < questCount - 1) {
       Axios.post("http://localhost:3001/vroom/cq",{
@@ -159,7 +126,6 @@ const VirtualRoomPage = () => {
       })
     }
   }
-
 
   function subQuestNumber() {
     if( currentQuestion > 0 ) {
@@ -179,20 +145,23 @@ const VirtualRoomPage = () => {
     }
   }
 
-  const handleNavigate = () => {
+  const handleNavigate = (boolean) => {
     socket.emit("left_room", { 
       room: (params.id).toString(), 
       username: username
     });
-    navigate("/")
+    if(boolean) {
+      navigate("/")
+    }
   }
-
 
   return (
     <div className='page'>
-      <Navbar />
+      <Navbar 
+        handleNavigate={handleNavigate}
+      />
       <div>
-        <button onClick={handleNavigate}>Domov</button>
+        <button onClick={() => handleNavigate(true)}>Domov</button>
         <button onClick={subQuestNumber}>predchazajuca otazka</button>
         <button onClick={addQuestNumber}>dalsia otazka</button>
       </div>

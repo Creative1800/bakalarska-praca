@@ -5,15 +5,17 @@ import '../styles/App.css';
 import img from '../assets/boy.jpg';
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar(props) {
   const [username, setUsername] = useState('');
   Axios.defaults.withCredentials = true;
   const navigate = useNavigate();
 
   const logout = () => {
+
     Axios.delete('http://localhost:3001/login')
     .then((response)=> {
       if(response.data === "") {
+        props.handleNavigate(false);
         navigate("/login");
       } else {
         console.log("Odhlásenie neúspešné!")

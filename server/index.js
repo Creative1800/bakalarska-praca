@@ -40,18 +40,25 @@ io.on("connection", (socket) => {
     socket.join(data.room);
     io.to(data.room).emit("joined", {users, username: data.username});
   });
-
-  socket.on("send_message", (data) => {
-    socket.to(data.room).emit("receive_message", data);
-  });
   
   socket.on("left_room", (data) => {
-    console.log("left_room", data)
-    console.log(users)
     removeUser(data)
-    console.log(users)
     socket.to(data.room).emit("joined", {users, username: data.username});
   });
+
+  socket.on('questionChange', (data) => {
+    socket.to(data.room).emit('questionChanged', data)
+  })
+
+  socket.on('inputClick', (data) => {
+    console.log("inputClick", data.isInputInteracted[data.inputId].room)
+    socket.to(data.isInputInteracted[data.inputId].room).emit('inputClick', data)
+  })
+  
+  socket.on('inputChange', (data) => {
+    console.log(data)
+    socket.to(data.room).emit('inputChange', data)
+  })
 
 });
 

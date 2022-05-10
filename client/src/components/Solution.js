@@ -1,6 +1,7 @@
 import '../styles/App.css';
 import Input from './Input';
 import React, { useEffect, useState } from 'react'
+import { socket } from '../App'
 
 const Solution = (props) => {
   let inputCounter = -1;
@@ -13,10 +14,10 @@ const Solution = (props) => {
 
 
 
-  /* useEffect(()=> {
-    socket.emit("USER_ONLINE", props.username);
+  useEffect(()=> {
 
     socket.on('inputClick', function(data) {
+      console.log(data, "tu")
       if(data.isInputInteracted[data.inputId].vRoomId === props.vRoomId) {
         setIsInputInteracted(data.isInputInteracted) 
       }
@@ -27,10 +28,9 @@ const Solution = (props) => {
         updateSolutionArray(data.solutionArray)
       }
     })    
-  },[socket, props.username]) */
+  },[])
   
   const handleChange = (id, inputValue) => {
-    //solutionArray[id] = inputValue;
     let newArr = [...solutionArray];
     newArr[id] = inputValue;
     updateSolutionArray(newArr);
@@ -47,15 +47,16 @@ const Solution = (props) => {
         }
   });
 
-  /* const updateInputValue = (id) => {
+  const updateInputValue = (id) => {
     socket.emit(
       'inputChange', { 
         inputId: id, 
+        room: props.vRoomId,
         isInputInteracted: isInputInteracted, 
         picsArray: props.picsArray,
         solutionArray: solutionArray  
     })
-  } */
+  }
 
   const checkSolutions = () => {
     const areArraysSame = compareArrays();
@@ -90,6 +91,38 @@ const Solution = (props) => {
     return true
   }
 
+  function handleInputClick(id, booleanValue) {
+    let newArr = [...isInputInteracted];
+    newArr[id] = {
+      username: props.username,
+      isInteracted: booleanValue,
+      room: (props.vRoomId).toString(),
+    };
+    setIsInputInteracted(newArr);
+
+    /* isInputInteracted[id] = {
+      username: props.username,
+      isInteracted: booleanValue,
+      room: (props.vRoomId).toString(),
+    } */ 
+    console.log(booleanValue)
+    console.log(isInputInteracted)
+    /* Axios.post("http://localhost:3001/inputfield/update", {
+      
+    })
+    .then((response) => {
+      if (response.data.loggedIn === true){
+        setUsername(response.data.user)
+      } 
+    }) */
+    //console.log(isInputInteracted)
+    socket.emit(
+      'inputClick', { 
+        inputId: id, 
+        isInputInteracted: newArr
+    })
+  }
+
   const questionData = props
   .questionContent
   .content.map(item => {
@@ -112,32 +145,12 @@ const Solution = (props) => {
         isInputInteracted={isInputInteracted[inputCounter]}
         username={props.username}
         solutionArray={solutionArray[inputCounter]}
+        updateInputValue={updateInputValue}
         />
         )
   })
   
-  function handleInputClick(id, booleanValue) {
-
-    isInputInteracted[id] = {
-      username: props.username,
-      isInteracted: booleanValue,
-      vRoomId: props.vRoomId 
-    } 
-    /* Axios.post("http://localhost:3001/inputfield/update", {
-      
-    })
-    .then((response) => {
-      if (response.data.loggedIn === true){
-        setUsername(response.data.user)
-      } 
-    }) */
-    //console.log(isInputInteracted)
-    /* socket.emit(
-      'inputClick', { 
-        inputId: id, 
-        isInputInteracted: isInputInteracted
-    }) */
-  }
+  
       
 
   return (

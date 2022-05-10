@@ -10,7 +10,7 @@ const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
 
   
-  /* useEffect(() => {
+  useEffect(() => {
 
   
     if(props.isInputInteracted) {
@@ -38,7 +38,7 @@ const Input = (props) => {
         console.log("not interacted")
       }
     }
-  }, []) */
+  }, [])
   
   
   /* if (props.picsArray && props.picsArray[props.id] !== undefined) {
@@ -48,17 +48,42 @@ const Input = (props) => {
  
   
 
-
-  if(props.isInputInteracted) {
+  /* useEffect(() => {}, []) */
+  /* if(props.isInputInteracted) {
     const el = document.getElementsByClassName("input--input");
     document.addEventListener('click', function(event) {
-      if(!el) return
+      if(!el || !el[props.id]) return
       var isClickInsideElement = el[props.id].contains(event.target);
       if (!isClickInsideElement && props.isInputInteracted.username === props.username) {
+        console.log(isClickInsideElement, el[props.id].contains(event.target))
+        console.log('ttt')
         props.updateInputValue(props.id)          
       }
     });
-  }
+  } */
+  useEffect(() => {
+
+    const el = document.getElementsByClassName('input--input')
+    if(el[props.id]) {
+      el[props.id].onblur = function() {
+        [props.id].style.background = "white";
+        props.handleInputClick(props.id, false)
+        console.log("not focused")
+    };
+    
+    el[props.id].onfocus = function() {
+      el[props.id].style.background = "blue";
+      props.handleInputClick(props.id, true)
+      console.log("focused")
+    };
+    }
+    console.log("isinputInteracted: ", props.isInputInteracted)
+  }, [])
+
+  useEffect(() => {
+
+    console.log("isinputInteracted: ", props.isInputInteracted)
+  }, [])
   
   const getInputValue = (event)=>{
     const inputValue = event.target.value;
@@ -99,17 +124,18 @@ const Input = (props) => {
           src={require(`../assets/piktograms/${props.inputContent.pic}.png`)} 
           alt="piktogram" 
         />
+        {props.isInputInteracted ? props.isInputInteracted.username : null}
         { props.solutionArray !== undefined ?
           <input 
           onChange={getInputValue} 
           defaultValue={props.solutionArray}
-          onClick={() => props.handleInputClick(props.id, true)}  
+          /* onClick={() => props.handleInputClick(props.id, true)}  */ 
           className='input--input' 
           />
           :
           <input 
           onChange={getInputValue} 
-          onClick={() => props.handleInputClick(props.id, true)}  
+          /* onClick={() => props.handleInputClick(props.id, true)}  */ 
           className='input--input' 
           />
         }
