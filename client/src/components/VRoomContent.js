@@ -7,6 +7,7 @@ import Question from '../components/Question';
 import Solution from '../components/Solution';
 import TestInfo from '../components/TestInfo';
 import '../styles/App.css';
+import { socket } from '../App'
 
 const VRoomContent = (props) => {
   const [username, setUsername] = useState('');
@@ -16,6 +17,8 @@ const VRoomContent = (props) => {
   const [ modalPositions, setModalPositions ] = useState([])
   const [ picNameFromModal, setPicNameFromModal ] = useState('');
   const [ inputId, setInputId ] = useState();
+
+  const [ isModalOpenedArray, updateIsModalOpenedArray ] = useState([])
 
 
   useEffect(() => {
@@ -27,16 +30,60 @@ const VRoomContent = (props) => {
     })
   }, [])
   
+  useEffect(() => {
+    socket.on('picClick', function(data) {
+      if(data.isInputInteracted[data.inputId].room === (props.vRoomId).toString()) {
+        updateIsModalOpenedArray(data.isInputInteracted) 
+      }
+    })
+  }, [])
+  
+  useEffect(() => {
+    socket.on('picArrayChange', function(data) {
+      if(data.room === (props.vRoomId).toString()) {
+        console.log("fafka", data)
+        props.updatePicsArray(data.solutionArray) 
+        console.log("daaaa", props.picsArray)
+      }
+    })
+  }, [])
+  
 
   const toggleModal = (bottomPosition, leftPosition, inputId) => {
-    setIsModalOpened(prevState => !prevState)
+    setIsModalOpened(prevState => {
+      let newArr = [...isModalOpenedArray];
+      newArr[inputId] = {
+        userId: socket.id,
+        isInteracted: !prevState,
+        room: (props.vRoomId).toString()
+      }
+
+      socket.emit(
+        'picClick', { 
+          inputId: inputId, 
+          isInputInteracted: newArr
+      })
+
+      updateIsModalOpenedArray(newArr);
+      return ( 
+        !prevState
+      )
+    })
     setModalPositions([leftPosition, bottomPosition]);
     setInputId(inputId)
+
   }
 
   const getPicNameIdFromModal = (name, id) => {
     setPicNameFromModal([name, id])
     props.addPicsArray(id, name)
+    console.log("piarrayChange: ", props.picsArray)
+    /* socket.emit(
+      'picArrayChange', {  
+        questionType: true,
+        room: (props.vRoomId).toString(),
+        solutionArray: props.picsArray 
+    }) */
   }
 
   return (
@@ -53,7 +100,7 @@ const VRoomContent = (props) => {
           /> 
           { isModalOpened ?
             <InputModal  
-              piktogramList={props.shuffledArrayOfPictograms}//props.vRoomData[props.currentQuestion].question_content.content}
+              piktogramList={props.shuffledArrayOfPictograms}
               isModalOpened={isModalOpened}
               toggleModal={toggleModal}
               modalPositions={modalPositions}
@@ -72,7 +119,8 @@ const VRoomContent = (props) => {
             picsArray={props.picsArray}
             vRoomId={props.vRoomId}
             username={username}
-
+            solutionArray={props.solutionArray}
+            isModalOpenedArray={isModalOpenedArray}
           />}
         </main>
         <ActiveUsers  

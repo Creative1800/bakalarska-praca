@@ -4,38 +4,69 @@ import '../styles/InputModal.scss';
 
 const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
+  const [disabledPicInput, setDisabledPicInput] = useState(false);
+  const [ inputValue, setInputValue ] = useState(props.solutionArray)
 
- 
+
   useEffect(() => {
-    const el = document.getElementsByClassName('input--input')
+    setInputValue(props.solutionArray)
+  }, [props.solutionArray])  
 
-    if(el[props.id]) {
-      el[props.id].onblur = function() { // input if not focused
-        props.handleInputClick(props.id, false)
-        props.updateInputValue(props.id)
-      };
-    
-      el[props.id].onfocus = function() { // input if focused
-        props.handleInputClick(props.id, true)
-      };
+  const el = document.getElementsByClassName('input--input')
+  if(el[props.id]) {
+    el[props.id].onblur = function() { // not focused
+      props.handleInputClick(props.id, false)
+      props.updateInputValue(props.id)
+    };
+  
+    el[props.id].onfocus = function() { // focused
+      props.handleInputClick(props.id, true)
+    };
+  }
+
+  useEffect(() => {
+    const el = document.getElementsByClassName('input--img')
+    if(props.isModalOpenedArray) {
+      if( props.isModalOpenedArray.isInteracted && 
+        props.isModalOpenedArray.userId === props.userId) {
+
+          setDisabledPicInput(false) // interacted by me
+          el[props.id].style.opacity= "1"
+          el[props.id].style.cursor= "pointer";
+          
+      } else if(props.isModalOpenedArray.isInteracted && 
+        props.isModalOpenedArray.userId !== props.userId) {
+
+        setDisabledPicInput(true)  // interacted by somebody else
+        el[props.id].style.opacity= "0.25"
+        el[props.id].style.cursor= "not-allowed";
+
+        
+      } else if(!props.isModalOpenedArray.isInteracted) {
+
+        setDisabledPicInput(false) // not interacted 
+        el[props.id].style.opacity= "1"
+        el[props.id].style.cursor= "pointer";
+      }
     }
+  }, [props.isModalOpenedArray])
     
-  }, [])
-
   useEffect(() => {
     if(props.isInputInteracted) {
       if( props.isInputInteracted.isInteracted && 
-        props.isInputInteracted.username === props.username) {
+        props.isInputInteracted.userId === props.userId) {
           setDisabledInput(false) // interacted by me
+          
       } else if(props.isInputInteracted.isInteracted && 
-        props.isInputInteracted.username !== props.username) {
-          setDisabledInput(true) // interacte by somebody else
+        props.isInputInteracted.userId !== props.userId) {
+          setDisabledInput(true)  // interacted by somebody else
+
       } else if(!props.isInputInteracted.isInteracted) {
-          setDisabledInput(false) // not interacted
+          setDisabledInput(false) // not interacted 
       }
     }
   }, [props.isInputInteracted])
-  
+
   const getInputValue = (event)=>{
     const inputValue = event.target.value;
     props.handleChange(props.id, inputValue);
@@ -45,6 +76,7 @@ const Input = (props) => {
     const elem = document.getElementsByClassName("input--comp");
     let rect = elem[props.id].getBoundingClientRect();
     props.toggleModal(rect.bottom, rect.left, props.id)
+    
   }
 
   return (
@@ -53,14 +85,14 @@ const Input = (props) => {
       <div  className='input--comp'>
         { props.picsArray && props.picsArray[props.id] !== undefined ?
           <img 
-            onClick={handle} 
+            onClick={disabledPicInput ? null : handle} 
             className='input--img input--img--inserted' 
             id='four'
             src={require(`../assets/piktograms/${props.picsArray[props.id]}.png`)}
           />
           :
           <img 
-            onClick={handle} 
+            onClick={disabledPicInput ? null : handle} 
             className='input--img input--insert--image'
             id='four'
             src={insertImage}
@@ -75,19 +107,12 @@ const Input = (props) => {
           src={require(`../assets/piktograms/${props.inputContent.pic}.png`)} 
           alt="piktogram" 
         />
-        { disabledInput ?
-          <input 
-          defaultValue={props.solutionArray}
-          disabled={true}
+        <input 
+          onChange={getInputValue} 
+          value={inputValue ? inputValue : ""}
+          disabled={disabledInput}
           className='input--input' 
           />
-          :
-          <input 
-          onChange={getInputValue}
-          disabled={false}
-          className='input--input' 
-          />
-        }
       </div>
     }
     </>

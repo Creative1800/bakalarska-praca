@@ -12,8 +12,9 @@ const VirtualRoomPage = (props) => {
   const params = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  let picsArray = [];
+  const [ picsArray, setPicsArray ] = useState([]);
   
+  const [solutionArray, setSolutionArray ] = useState([])
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [vRoomData, setVRoomData] = useState();
 
@@ -26,9 +27,8 @@ const VirtualRoomPage = (props) => {
 
   useEffect(()=> {
     socket.on('questionChanged', function(data) {
-      if(data.room === (params.id).toString()) {
-        setCurrentQuestion(data.current_question)
-      }
+      setCurrentQuestion(data.questionData.current_question)
+      setSolutionArray(data.solutionArray)
     })  
   },[])
 
@@ -38,6 +38,11 @@ const VirtualRoomPage = (props) => {
       if(isMounted){
         updateUsers(data.users);
         setUsername(location.state.username)
+        setSolutionArray(data.solutionArray)
+        console.log("data", data)
+        if(data.username === location.state.username) {
+          setPicsArray(data.solutionArray)
+        }
       } 
     })
 
@@ -107,7 +112,21 @@ const VirtualRoomPage = (props) => {
   randomModalImages(shuffledArrayOfPictograms)
 
   const addPicsArray = (id, name) => {
-    picsArray[id] = name
+    let newArr = [...picsArray];
+    newArr[id] = name;
+    socket.emit(
+      'picArrayChange', {  
+        questionType: true,
+        room: (params.id).toString(),
+        solutionArray: newArr
+    })
+    setPicsArray(newArr);
+    //picsArray[id] = name
+  }
+
+  const updatePicsArray = (array) => {
+    console.log("array: ", array)
+    setPicsArray(array)
   }
 
   function  addQuestNumber() {
@@ -175,6 +194,8 @@ const VirtualRoomPage = (props) => {
         picsArray={picsArray}
         shuffledArrayOfPictograms={shuffledArrayOfPictograms}
         activeUsers={users}
+        solutionArray={solutionArray}
+        updatePicsArray={updatePicsArray}
       />
     </div>
   )

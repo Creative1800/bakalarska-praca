@@ -5,34 +5,33 @@ import { socket } from '../App'
 
 const Solution = (props) => {
   let inputCounter = -1;
-  const [solutionArray, updateSolutionArray ] = useState([])
+  const [solutionArray, updateSolutionArray ] = useState(props.solutionArray)
   let correctSolutionCounter = 0;
   let correctSolutionArray = [];
   const [isInputEmpty, setIsInputEmpty] = useState(false)
   const [isInputInteracted, setIsInputInteracted ] = useState([])
 
 
-
   useEffect(()=> {
-
+    /* socket.on('questionChanged', function(data) {
+      updateSolutionArray(data.solutionArray)
+    }) */
     socket.on('inputClick', function(data) {
       if(data.isInputInteracted[data.inputId].room === (props.vRoomId).toString()) {
-        console.log(data, "tu")
         setIsInputInteracted(data.isInputInteracted) 
       }
     })
     socket.on('inputChange', function(data) {
-      console.log("data: ", data.isInputInteracted[data.inputId].vRoomId)
-      if(data.isInputInteracted[data.inputId].vRoomId === props.vRoomId) {
-        updateSolutionArray(data.solutionArray)
-      }
+      //console.log(data.solutionArray)
+      updateSolutionArray(data.solutionArray)
     })    
-  },[isInputInteracted])
+  },[isInputInteracted, solutionArray])
 
   function handleInputClick(id, booleanValue) {
     let newArr = [...isInputInteracted];
     newArr[id] = {
       username: props.username,
+      userId: socket.id,
       isInteracted: booleanValue,
       room: (props.vRoomId).toString(),
     };
@@ -63,15 +62,22 @@ const Solution = (props) => {
   });
 
   const updateInputValue = (id) => {
-    console.log(id, 'inputChange')
-    socket.emit(
-      'inputChange', { 
-        inputId: id, 
-        room: props.vRoomId,
-        isInputInteracted: isInputInteracted, 
-        picsArray: props.picsArray,
-        solutionArray: solutionArray  
-    })
+    if(props.questionContent.type) {
+      socket.emit(
+        'inputChange', {  
+          questionType: props.questionContent.type,
+          room: (props.vRoomId).toString(),
+          solutionArray: props.picsArray 
+      })
+    } else {
+      socket.emit(
+        'inputChange', {  
+          questionType: props.questionContent.type,
+          room: (props.vRoomId).toString(),
+          solutionArray: solutionArray  
+      })
+    }
+    
   }
 
   const checkSolutions = () => {
@@ -107,8 +113,6 @@ const Solution = (props) => {
     return true
   }
 
-  
-
   const questionData = props
   .questionContent
   .content.map(item => {
@@ -129,9 +133,11 @@ const Solution = (props) => {
         isInputEmpty={isInputEmpty}
         setIsInputEmpty={setIsInputEmpty}
         isInputInteracted={isInputInteracted[inputCounter]}
-        username={props.username}
+        userId={socket.id}
+        /* username={props.username} */
         solutionArray={solutionArray[inputCounter]}
         updateInputValue={updateInputValue}
+        isModalOpenedArray={props.isModalOpenedArray[inputCounter]}
         />
         )
   })

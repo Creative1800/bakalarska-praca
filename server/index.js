@@ -30,6 +30,8 @@ const io = new Server(server,{
 }) //in case server and client run on different urls
 
 const users = []
+const solutionsArray = []
+let roomIndex = 0
 io.on("connection", (socket) => {
   
   console.log(`User Connected: ${socket.id}`);
@@ -38,7 +40,15 @@ io.on("connection", (socket) => {
     addUser(data, socket)
     
     socket.join(data.room);
-    io.to(data.room).emit("joined", {users, username: data.username});
+
+    let solutionArray = []  
+    for(let i = 0; i < solutionsArray.length ; i++) {
+      if(data.room === solutionsArray[i].room) {
+        solutionArray = solutionsArray[i].solutionArray
+        console.log(solutionsArray, solutionArray, solutionsArray[i].solutionArray)
+      }
+    }
+    io.to(data.room).emit("joined", {users, username: data.username, solutionArray});
   });
   
   socket.on("left_room", (data) => {
@@ -47,20 +57,74 @@ io.on("connection", (socket) => {
   });
 
   socket.on('questionChange', (data) => {
-    socket.to(data.room).emit('questionChanged', data)
+    roomIndex = 0
+
+    const isEmptied = setSolutionArrayToEmpty(data)
+    if(isEmptied) {
+      io.to(data.room).emit(
+        'questionChanged', 
+        {questionData: data , solutionArray: solutionsArray[roomIndex].solutionArray
+        })
+    } else {
+      io.to(data.room).emit(
+        'questionChanged', 
+        {questionData: data , solutionArray: []
+        })
+    }    
   })
 
+  const setSolutionArrayToEmpty = (data) => {
+    for(roomIndex ; roomIndex < solutionsArray.length; roomIndex++) {
+      if(data.room === solutionsArray[roomIndex].room) {
+        solutionsArray[roomIndex].solutionArray = []
+        return true
+      }
+    }
+    return false
+  }
+
   socket.on('inputClick', (data) => {
-    console.log("inputClick", data.isInputInteracted[data.inputId].room)
     socket.to(data.isInputInteracted[data.inputId].room).emit('inputClick', data)
   })
   
+  socket.on('picClick', (data) => {
+    console.log("picClick")
+    socket.to(data.isInputInteracted[data.inputId].room).emit('picClick', data)
+  })
+
+  socket.on('picArrayChange', (data) => {
+    const roomPositionInSolutionArray = searchInSolutionArray(data)
+    if(roomPositionInSolutionArray === -1) {
+      solutionsArray.push(data)
+    } else {
+      solutionsArray[roomPositionInSolutionArray] = data 
+    }
+    console.log(solutionsArray)
+    /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
+    socket.to(data.room).emit('picArrayChange', data)
+  })
+  
   socket.on('inputChange', (data) => {
-    console.log(data)
+    const roomPositionInSolutionArray = searchInSolutionArray(data)
+    if(roomPositionInSolutionArray === -1) {
+      solutionsArray.push(data)
+    } else {
+      solutionsArray[roomPositionInSolutionArray] = data 
+    }
+    /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
     socket.to(data.room).emit('inputChange', data)
   })
 
 });
+
+const searchInSolutionArray = (data) => {
+  for(let i = 0; i < solutionsArray.length ; i++) {
+    if(data.room === solutionsArray[i].room) {
+      return i
+    }
+  }
+  return -1
+} 
 
 const addUser = (data, socket) => {
   for(let i = 0; i < users.length ; i++) {

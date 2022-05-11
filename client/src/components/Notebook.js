@@ -47,17 +47,27 @@ const Notebook = (props) => {
       });
     }
   };
+
+  const checkIfTestIsActive = () => {
+    const currentTime = new Date()
+    if(currentTime >= startTime && currentTime <= endTime){
+      return true
+    }
+    return false
+  }
   
   return (
     <div className='notebook' >
       <div className='notebook--context'>
         <h2 className='notebook--h2' >TEST {props.testCounter}</h2>
-        <p className='notebook--p notebook--p1' >{startDateTime}</p>
-        <p className='notebook--p notebook--p2' >{endDateTime}</p>
+        <p className='notebook--p notebook--p1' >Od: {startDateTime}</p>
+        <p className='notebook--p notebook--p2' >Do: {endDateTime}</p>
         <p className='notebook--p notebook--p3' >Neodoslané</p>
         <button 
           onClick={() => {
-            addActiveUser()
+            checkIfTestIsActive() ?
+            addActiveUser() :
+            alert(`Test ${props.testCounter} je neaktívny!`)
           }} 
           className='notebook--button'>Vstúpiť do testu</button>
       </div>

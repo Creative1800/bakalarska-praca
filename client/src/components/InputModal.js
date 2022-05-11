@@ -4,8 +4,6 @@ import { CgClose } from "react-icons/cg";
 import image from '../assets/piktograms/a.png'
 
 const InputModal = (props) => {
-  //console.log(props.picsArray)
-
     
   useEffect(() => {
     const elem = document.getElementById("input--modal");
@@ -37,16 +35,16 @@ const InputModal = (props) => {
     return (
       picCounter += 1,
       <img  
-            key={picCounter}
-            className='input--modal--img' 
-            src={require(`../assets/piktograms/${item}.png`)} 
-            onClick={
-              () => {
-                props.getPicNameIdFromModal(item, props.inputId);
-                props.toggleModal()
-              }
-            }
-          />
+        key={picCounter}
+        className='input--modal--img' 
+        src={require(`../assets/piktograms/${item}.png`)} 
+        onClick={
+          () => {
+            props.getPicNameIdFromModal(item, props.inputId);
+            props.toggleModal(undefined, undefined, props.inputId)
+          }
+        }
+      />
     )
   } )
   
@@ -56,7 +54,10 @@ const InputModal = (props) => {
     { 
       <div className='input--modal' id='input--modal'>
         <div className='input--modal--header'>
-          <CgClose className='x--button' onClick={props.toggleModal}/>
+          <CgClose 
+            className='x--button' 
+            onClick={() => props.toggleModal(undefined, undefined, props.inputId)}
+          />
         </div>
         <div className='input--modal--imgs'>
           {piktogramList}
