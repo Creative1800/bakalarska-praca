@@ -4,12 +4,15 @@
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
+  color: var(--primary);
+  font-weight: 500;
 }
 
 .vr--info {
   /* border: 2px solid blue; */
   padding: 1em 1.5em;
-  min-height: 8vh;
+  align-self: start;
+  min-height: 12vh;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px 0;
 }
@@ -24,4 +27,8 @@
 .current--question {
   background-color: var(--primary);
   color: var(--white);
+}
+
+.info--header {
+  color: var(--secondary);
 }

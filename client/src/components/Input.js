@@ -5,12 +5,12 @@ import '../styles/InputModal.scss';
 const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
   const [disabledPicInput, setDisabledPicInput] = useState(false);
-  const [ inputValue, setInputValue ] = useState(props.solutionArray)
+  const [ inputValue, setInputValue ] = useState(props.solutionArray[props.id])
 
 
   useEffect(() => {
-    setInputValue(props.solutionArray)
-  }, [props.solutionArray])  
+    setInputValue(props.solutionArray[props.id])
+  }, [props.solutionArray[props.id]])  
 
   const el = document.getElementsByClassName('input--input')
   if(el[props.id]) {
@@ -78,12 +78,15 @@ const Input = (props) => {
     props.toggleModal(rect.bottom, rect.left, props.id)
     
   }
-
+  
+  
   return (
     <>
     { props.questionType ?
       <div  className='input--comp'>
-        { props.picsArray && props.picsArray[props.id] !== undefined ?
+        { props.picsArray && 
+          props.picsArray[props.id] !== undefined && 
+          props.picsArray[props.id] !== null ?
           <img 
             onClick={disabledPicInput ? null : handle} 
             className='input--img input--img--inserted' 

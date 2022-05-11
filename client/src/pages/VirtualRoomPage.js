@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import VRoomContent from '../components/VRoomContent';
 import '../styles/App.css';
 import { socket } from '../App'
+import { AiFillHome } from "react-icons/ai"
 
 
 const VirtualRoomPage = (props) => {
@@ -25,6 +26,8 @@ const VirtualRoomPage = (props) => {
   const [users, updateUsers] = useState([])
   const [ username, setUsername ] = useState("")
 
+  
+
   useEffect(()=> {
     socket.on('questionChanged', function(data) {
       setCurrentQuestion(data.questionData.current_question)
@@ -38,9 +41,9 @@ const VirtualRoomPage = (props) => {
       if(isMounted){
         updateUsers(data.users);
         setUsername(location.state.username)
-        setSolutionArray(data.solutionArray)
-        console.log("data", data)
+
         if(data.username === location.state.username) {
+          setSolutionArray(data.solutionArray)
           setPicsArray(data.solutionArray)
         }
       } 
@@ -67,7 +70,7 @@ const VirtualRoomPage = (props) => {
         setLoading(false)
         setQuestCount(response.data.length)
     })
-  }, [])
+  }, [isLoading])
   
   useEffect(() => {
     Axios.post("http://localhost:3001/vroom",{
@@ -78,6 +81,8 @@ const VirtualRoomPage = (props) => {
     })
   }, [])
 
+  
+
   if(isLoading) {
     return (
       <div className='vr--main--question'>
@@ -85,6 +90,8 @@ const VirtualRoomPage = (props) => {
       </div>
     )
   }
+
+  console.log(vRoomData)
 
 
   let shuffledArrayOfPictograms = [];
@@ -116,17 +123,19 @@ const VirtualRoomPage = (props) => {
     newArr[id] = name;
     socket.emit(
       'picArrayChange', {  
-        questionType: true,
+        questionType: false,
         room: (params.id).toString(),
         solutionArray: newArr
     })
     setPicsArray(newArr);
-    //picsArray[id] = name
   }
 
   const updatePicsArray = (array) => {
-    console.log("array: ", array)
     setPicsArray(array)
+  }
+
+  const updateSolutionArray = (array) => {
+    setSolutionArray(array)
   }
 
   function  addQuestNumber() {
@@ -136,6 +145,8 @@ const VirtualRoomPage = (props) => {
         currentQuestion: currentQuestion + 1
       })
       .then((response) => {
+        setPicsArray([])
+        setSolutionArray([])
         setCurrentQuestion(response.data[0].current_question)
         socket.emit(
           'questionChange', { 
@@ -153,8 +164,9 @@ const VirtualRoomPage = (props) => {
         currentQuestion: currentQuestion - 1
       })
       .then((response) => {
+        setPicsArray([])
+        setSolutionArray([])
         setCurrentQuestion(response.data[0].current_question)
-
         socket.emit(
           'questionChange', { 
             current_question: response.data[0].current_question, 
@@ -179,8 +191,17 @@ const VirtualRoomPage = (props) => {
       <Navbar 
         handleNavigate={handleNavigate}
       />
-      <div>
-        <button onClick={() => handleNavigate(true)}>Domov</button>
+      <div className='navigation'>
+        <div className='home--div'>
+          <p 
+            className='home--button' 
+            onClick={() => handleNavigate(true)}
+            >
+            <AiFillHome className='home--icon' /> Domov
+          </p>
+        </div>
+        <h3 className='test--name'>Test {params.id}</h3>
+        <div></div>
         <button onClick={subQuestNumber}>predchazajuca otazka</button>
         <button onClick={addQuestNumber}>dalsia otazka</button>
       </div>
@@ -196,6 +217,7 @@ const VirtualRoomPage = (props) => {
         activeUsers={users}
         solutionArray={solutionArray}
         updatePicsArray={updatePicsArray}
+        updateSolutionArray={updateSolutionArray}
       />
     </div>
   )

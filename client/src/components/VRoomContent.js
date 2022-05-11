@@ -41,12 +41,12 @@ const VRoomContent = (props) => {
   useEffect(() => {
     socket.on('picArrayChange', function(data) {
       if(data.room === (props.vRoomId).toString()) {
-        console.log("fafka", data)
         props.updatePicsArray(data.solutionArray) 
-        console.log("daaaa", props.picsArray)
       }
     })
   }, [])
+
+  
   
 
   const toggleModal = (bottomPosition, leftPosition, inputId) => {
@@ -77,14 +77,8 @@ const VRoomContent = (props) => {
   const getPicNameIdFromModal = (name, id) => {
     setPicNameFromModal([name, id])
     props.addPicsArray(id, name)
-    console.log("piarrayChange: ", props.picsArray)
-    /* socket.emit(
-      'picArrayChange', {  
-        questionType: true,
-        room: (props.vRoomId).toString(),
-        solutionArray: props.picsArray 
-    }) */
   }
+  console.log(props.vRoomData[props.currentQuestion].question_content)
 
   return (
     <div className='vr--page'>
@@ -121,6 +115,8 @@ const VRoomContent = (props) => {
             username={username}
             solutionArray={props.solutionArray}
             isModalOpenedArray={isModalOpenedArray}
+            updatePicsArray={props.updatePicsArray}
+            updateSolutionArray={props.updateSolutionArray}
           />}
         </main>
         <ActiveUsers  

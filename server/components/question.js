@@ -47,6 +47,7 @@ const getQuestionsContent = (res, questionIds) => {
       })
     })`,
   (error, response) => {
+    console.log("tu", response.rows)
     res.send(response.rows)
   })
 

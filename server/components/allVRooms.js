@@ -14,7 +14,10 @@ client.connect();
 // router to '/virtualroom'
 
 router.get("/", (req, res) => {
-  client.query(`SELECT * FROM virtual_rooms`, 
+  client.query(`
+    SELECT * 
+    FROM virtual_rooms 
+    ORDER BY id ASC`, 
   (error, response) => {
     res.send(response.rows)
   })

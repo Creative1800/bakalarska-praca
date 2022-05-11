@@ -1,5 +1,27 @@
 .vr--active--users {
+  align-self: start;
+
   padding: 1em 1.5em;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 0 0 10px 0;
+}
+
+.active--user--name {
+  margin: 0;
+  padding: .5em 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: .04em;
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+}
+
+.active--user--icon {
+  margin-right: .5em;
+  color: var(--primary);
+}
+
+.active--users--header {
+  color: var(--secondary)
 }

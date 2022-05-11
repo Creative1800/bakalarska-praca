@@ -41,11 +41,11 @@ io.on("connection", (socket) => {
     
     socket.join(data.room);
 
+    
     let solutionArray = []  
     for(let i = 0; i < solutionsArray.length ; i++) {
       if(data.room === solutionsArray[i].room) {
         solutionArray = solutionsArray[i].solutionArray
-        console.log(solutionsArray, solutionArray, solutionsArray[i].solutionArray)
       }
     }
     io.to(data.room).emit("joined", {users, username: data.username, solutionArray});
@@ -58,15 +58,17 @@ io.on("connection", (socket) => {
 
   socket.on('questionChange', (data) => {
     roomIndex = 0
-
+    
     const isEmptied = setSolutionArrayToEmpty(data)
+    
+
     if(isEmptied) {
-      io.to(data.room).emit(
+      socket.to(data.room).emit(
         'questionChanged', 
         {questionData: data , solutionArray: solutionsArray[roomIndex].solutionArray
         })
     } else {
-      io.to(data.room).emit(
+      socket.to(data.room).emit(
         'questionChanged', 
         {questionData: data , solutionArray: []
         })
@@ -74,12 +76,16 @@ io.on("connection", (socket) => {
   })
 
   const setSolutionArrayToEmpty = (data) => {
+    
     for(roomIndex ; roomIndex < solutionsArray.length; roomIndex++) {
+      console.log("tu", data.room, solutionsArray[roomIndex].room)
       if(data.room === solutionsArray[roomIndex].room) {
+        console.log("tuuu")
         solutionsArray[roomIndex].solutionArray = []
         return true
       }
     }
+    
     return false
   }
 
@@ -88,29 +94,31 @@ io.on("connection", (socket) => {
   })
   
   socket.on('picClick', (data) => {
-    console.log("picClick")
     socket.to(data.isInputInteracted[data.inputId].room).emit('picClick', data)
   })
 
   socket.on('picArrayChange', (data) => {
     const roomPositionInSolutionArray = searchInSolutionArray(data)
+    console.log("before: ", solutionsArray, data.solutionArray)
     if(roomPositionInSolutionArray === -1) {
       solutionsArray.push(data)
     } else {
       solutionsArray[roomPositionInSolutionArray] = data 
     }
-    console.log(solutionsArray)
+    console.log("after: ", solutionsArray, data.solutionArray)
     /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
     socket.to(data.room).emit('picArrayChange', data)
   })
   
   socket.on('inputChange', (data) => {
     const roomPositionInSolutionArray = searchInSolutionArray(data)
+    console.log("before: ", solutionsArray, data.solutionArray)
     if(roomPositionInSolutionArray === -1) {
       solutionsArray.push(data)
     } else {
       solutionsArray[roomPositionInSolutionArray] = data 
     }
+    console.log("after: ", solutionsArray, data.solutionArray)
     /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
     socket.to(data.room).emit('inputChange', data)
   })

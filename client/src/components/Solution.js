@@ -5,27 +5,30 @@ import { socket } from '../App'
 
 const Solution = (props) => {
   let inputCounter = -1;
-  const [solutionArray, updateSolutionArray ] = useState(props.solutionArray)
+  //const [solutionArray, updateSolutionArray ] = useState(props.solutionArray)
   let correctSolutionCounter = 0;
   let correctSolutionArray = [];
   const [isInputEmpty, setIsInputEmpty] = useState(false)
   const [isInputInteracted, setIsInputInteracted ] = useState([])
 
+  useEffect(() => {
+    socket.on('questionChanged', (data) => {
+      console.log(data)
+      props.updatePicsArray(data.solutionArray)
+      props.updateSolutionArray(data.solutionArray) //tu
+    })
+  }, [props.picsArray, props.solutionArray])
 
   useEffect(()=> {
-    /* socket.on('questionChanged', function(data) {
-      updateSolutionArray(data.solutionArray)
-    }) */
     socket.on('inputClick', function(data) {
       if(data.isInputInteracted[data.inputId].room === (props.vRoomId).toString()) {
         setIsInputInteracted(data.isInputInteracted) 
       }
     })
     socket.on('inputChange', function(data) {
-      //console.log(data.solutionArray)
-      updateSolutionArray(data.solutionArray)
+      props.updateSolutionArray(data.solutionArray) //tu
     })    
-  },[isInputInteracted, solutionArray])
+  },[isInputInteracted, props.solutionArray])
 
   function handleInputClick(id, booleanValue) {
     let newArr = [...isInputInteracted];
@@ -45,9 +48,9 @@ const Solution = (props) => {
   }
   
   const handleChange = (id, inputValue) => {
-    let newArr = [...solutionArray];
+    let newArr = [...props.solutionArray];
     newArr[id] = inputValue;
-    updateSolutionArray(newArr);
+    props.updateSolutionArray(newArr);
   }
 
   props.questionContent      
@@ -74,7 +77,7 @@ const Solution = (props) => {
         'inputChange', {  
           questionType: props.questionContent.type,
           room: (props.vRoomId).toString(),
-          solutionArray: solutionArray  
+          solutionArray: props.solutionArray  
       })
     }
     
@@ -97,9 +100,9 @@ const Solution = (props) => {
   const compareArrays = () => {
     for (let i = 0; i < correctSolutionArray.length; ++i) {
       if (!props.questionContent.type) {
-        if (solutionArray.length === 0) return false
-        if (solutionArray[i] === undefined) return false
-        if ((solutionArray[i].toLowerCase()).replace(/\s/g,'') 
+        if (props.solutionArray.length === 0) return false
+        if (props.solutionArray[i] === undefined) return false
+        if ((props.solutionArray[i].toLowerCase()).replace(/\s/g,'') 
             !== correctSolutionArray[i].toLowerCase()
           ) {
             return false;
@@ -113,6 +116,7 @@ const Solution = (props) => {
     return true
   }
 
+  
   const questionData = props
   .questionContent
   .content.map(item => {
@@ -135,7 +139,7 @@ const Solution = (props) => {
         isInputInteracted={isInputInteracted[inputCounter]}
         userId={socket.id}
         /* username={props.username} */
-        solutionArray={solutionArray[inputCounter]}
+        solutionArray={props.solutionArray}
         updateInputValue={updateInputValue}
         isModalOpenedArray={props.isModalOpenedArray[inputCounter]}
         />
