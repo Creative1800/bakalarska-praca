@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import React, { useEffect, useState } from 'react'
 
-import { useParams, useHistory, useNavigate, useLocation } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar';
 import VRoomContent from '../components/VRoomContent';
 import '../styles/App.css';
@@ -21,6 +21,7 @@ const VirtualRoomPage = (props) => {
 
   const [questCount, setQuestCount] = useState(0);
   const [isLoading, setLoading] = useState(true);
+  const [isLoading2, setLoading2] = useState(true);
 
   const [room, setRoom] = useState((params.id).toString());
   const [users, updateUsers] = useState([])
@@ -78,20 +79,19 @@ const VirtualRoomPage = (props) => {
     })
     .then((response) => {
       setCurrentQuestion(response.data[0].current_question)
+      setLoading2(false)
     })
   }, [])
 
   
 
-  if(isLoading) {
+  if(isLoading || isLoading2 ) {
     return (
       <div className='vr--main--question'>
         
       </div>
     )
   }
-
-  console.log(vRoomData)
 
 
   let shuffledArrayOfPictograms = [];
@@ -202,8 +202,8 @@ const VirtualRoomPage = (props) => {
         </div>
         <h3 className='test--name'>Test {params.id}</h3>
         <div></div>
-        <button onClick={subQuestNumber}>predchazajuca otazka</button>
-        <button onClick={addQuestNumber}>dalsia otazka</button>
+        {/* <button onClick={subQuestNumber}>predchazajuca otazka</button>
+        <button onClick={addQuestNumber}>dalsia otazka</button> */}
       </div>
       <VRoomContent 
         currentQuestion={currentQuestion}

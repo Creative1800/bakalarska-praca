@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import '../styles/App.css';
 import { CgClose } from "react-icons/cg";
-import image from '../assets/piktograms/a.png'
 
 const InputModal = (props) => {
     
@@ -13,10 +12,10 @@ const InputModal = (props) => {
       elem.style.display = 'initial'
       if (props.modalPositions[1] + 250 > size.height){
         elem.style.left = `${props.modalPositions[0] - 75}px`;
-        elem.style.top = `${props.modalPositions[1] - 380}px`;
+        elem.style.top = `${props.modalPositions[1] - 380 }px`;
       } else {
-        elem.style.left = `${props.modalPositions[0] - 115}px`;
-        elem.style.top = `${props.modalPositions[1]}px`;
+        elem.style.left = `${props.modalPositions[0] -115}px`;
+        elem.style.top = `${props.modalPositions[1] }px`;
       }
     }
 
@@ -48,7 +47,7 @@ const InputModal = (props) => {
     )
   } )
   
-  
+  console.log(props)
   return (
     <>
     { 

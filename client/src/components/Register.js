@@ -10,7 +10,6 @@ function Register(props) {
   const [usernameReg, setUsernameReg] = useState("");
   const [passwordReg, setPasswordReg] = useState("");
 
-  //const [regStatus, setRegStatus] = useState(false);
   const [showDangerAlert, setShowDangerAlert] = useState(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
@@ -20,12 +19,10 @@ function Register(props) {
       password: passwordReg, 
     }).then((response)=> {
       if(response.data.isRegSuccessful === true) {
-        //setRegStatus(true);
         setShowDangerAlert(false)
         setShowSuccessAlert(true)
         console.log(response.data.isRegSuccessful);
       } else {
-        //setRegStatus(false);
         setShowSuccessAlert(false)
         setShowDangerAlert(true)
         console.log(response.data.isRegSuccessful);

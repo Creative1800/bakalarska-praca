@@ -11,8 +11,6 @@ const client = new Client({
 });
 client.connect();
 
-// router to '/virtualroom'
-
 router.get("/", (req, res) => {
   client.query(`
     SELECT * 

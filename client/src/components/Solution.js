@@ -5,7 +5,6 @@ import { socket } from '../App'
 
 const Solution = (props) => {
   let inputCounter = -1;
-  //const [solutionArray, updateSolutionArray ] = useState(props.solutionArray)
   let correctSolutionCounter = 0;
   let correctSolutionArray = [];
   const [isInputEmpty, setIsInputEmpty] = useState(false)
@@ -15,7 +14,7 @@ const Solution = (props) => {
     socket.on('questionChanged', (data) => {
       console.log(data)
       props.updatePicsArray(data.solutionArray)
-      props.updateSolutionArray(data.solutionArray) //tu
+      props.updateSolutionArray(data.solutionArray)
     })
   }, [props.picsArray, props.solutionArray])
 
@@ -26,7 +25,7 @@ const Solution = (props) => {
       }
     })
     socket.on('inputChange', function(data) {
-      props.updateSolutionArray(data.solutionArray) //tu
+      props.updateSolutionArray(data.solutionArray)
     })    
   },[isInputInteracted, props.solutionArray])
 
@@ -138,7 +137,6 @@ const Solution = (props) => {
         setIsInputEmpty={setIsInputEmpty}
         isInputInteracted={isInputInteracted[inputCounter]}
         userId={socket.id}
-        /* username={props.username} */
         solutionArray={props.solutionArray}
         updateInputValue={updateInputValue}
         isModalOpenedArray={props.isModalOpenedArray[inputCounter]}

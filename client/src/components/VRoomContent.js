@@ -78,7 +78,6 @@ const VRoomContent = (props) => {
     setPicNameFromModal([name, id])
     props.addPicsArray(id, name)
   }
-  console.log(props.vRoomData[props.currentQuestion].question_content)
 
   return (
     <div className='vr--page'>

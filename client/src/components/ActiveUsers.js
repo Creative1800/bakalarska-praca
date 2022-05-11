@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
+import React from 'react';
 import '../styles/App.css';
 import { FaUser } from "react-icons/fa";
 

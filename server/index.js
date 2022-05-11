@@ -78,9 +78,7 @@ io.on("connection", (socket) => {
   const setSolutionArrayToEmpty = (data) => {
     
     for(roomIndex ; roomIndex < solutionsArray.length; roomIndex++) {
-      console.log("tu", data.room, solutionsArray[roomIndex].room)
       if(data.room === solutionsArray[roomIndex].room) {
-        console.log("tuuu")
         solutionsArray[roomIndex].solutionArray = []
         return true
       }
@@ -99,27 +97,21 @@ io.on("connection", (socket) => {
 
   socket.on('picArrayChange', (data) => {
     const roomPositionInSolutionArray = searchInSolutionArray(data)
-    console.log("before: ", solutionsArray, data.solutionArray)
     if(roomPositionInSolutionArray === -1) {
       solutionsArray.push(data)
     } else {
       solutionsArray[roomPositionInSolutionArray] = data 
     }
-    console.log("after: ", solutionsArray, data.solutionArray)
-    /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
     socket.to(data.room).emit('picArrayChange', data)
   })
   
   socket.on('inputChange', (data) => {
     const roomPositionInSolutionArray = searchInSolutionArray(data)
-    console.log("before: ", solutionsArray, data.solutionArray)
     if(roomPositionInSolutionArray === -1) {
       solutionsArray.push(data)
     } else {
       solutionsArray[roomPositionInSolutionArray] = data 
     }
-    console.log("after: ", solutionsArray, data.solutionArray)
-    /* solutionsArray = { room: data.room, solutionArray: data.solutionArray} */
     socket.to(data.room).emit('inputChange', data)
   })
 

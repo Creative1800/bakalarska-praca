@@ -39,14 +39,6 @@ router.post("/cq", (req, res) => {
       })
     }
   })
-  
-  /* client.query(
-    `SELECT current_question 
-    FROM virtual_rooms 
-    WHERE id = ${req.body.id}`, 
-  (error, response) => {
-    res.send(response.rows)
-  }) */
 })
 
 
