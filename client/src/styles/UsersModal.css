@@ -1,0 +1,39 @@
+.users--modal--header {
+  color: var(--white);
+  background-color: var(--primary);
+  letter-spacing: .04em;
+}
+
+.users--modal--body {
+  max-height: 300px;
+  overflow: auto;
+  color: var(--primary)
+}
+
+.users--modal--body::-webkit-scrollbar {
+  width: 20px;
+}
+.users--modal--body::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+.users--modal--body::-webkit-scrollbar-thumb{
+  background-color: var(--primary);
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+.closeButton {
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  background-color: var(--white);
+}
+
+.modal--body {
+  
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 500;
+  min-height: 4rem;
+}
+

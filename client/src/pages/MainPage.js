@@ -27,6 +27,7 @@ const MainPage = (props) => {
         testCounter={testCounter}
         startTime={item.start_time}
         endTime={item.end_time}
+        isSent={item.is_sent}
       />
     )
   })

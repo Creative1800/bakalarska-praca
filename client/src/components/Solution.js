@@ -2,13 +2,22 @@ import '../styles/App.css';
 import Input from './Input';
 import React, { useEffect, useState } from 'react'
 import { socket } from '../App'
+import UsersModal from '../components/UsersModal'
+import UniversalModal from '../components/universalModal'
+import { useNavigate } from 'react-router-dom';
+import Axios from 'axios';
 
 const Solution = (props) => {
+  const navigate = useNavigate();
   let inputCounter = -1;
   let correctSolutionCounter = 0;
   let correctSolutionArray = [];
   const [isInputEmpty, setIsInputEmpty] = useState(false)
   const [isInputInteracted, setIsInputInteracted ] = useState([])
+  const [modalShow, setModalShow] = useState(false);
+  const [universalModalShow, setUniversalModalShow] = useState(false);
+  const [ message, setMessage] = useState("")
+  const [ color, setColor] = useState("")
 
   useEffect(() => {
     socket.on('questionChanged', (data) => {
@@ -27,7 +36,21 @@ const Solution = (props) => {
     socket.on('inputChange', function(data) {
       props.updateSolutionArray(data.solutionArray)
     })    
-  },[isInputInteracted, props.solutionArray])
+  },[isInputInteracted, props.solutionArray]) 
+  
+  useEffect(()=> {
+    socket.on('showUniversalModal', function(data) {
+      setUniversalModalShow(true)
+      setMessage(data.message)
+      setColor(data.color)
+    })    
+  },[message, universalModalShow])
+  
+  useEffect(()=> {
+    socket.on('showModal', function(data) {
+      setModalShow(true)
+    })    
+  },[ modalShow])
 
   function handleInputClick(id, booleanValue) {
     let newArr = [...isInputInteracted];
@@ -86,13 +109,27 @@ const Solution = (props) => {
     const areArraysSame = compareArrays();
 
     if(areArraysSame) {
-      alert("Spravne riesenie") 
       props.addQuestNumber()
       Array.from(document.querySelectorAll("input")).forEach(
         input => (input.value = "")
       );
+      if(props.currentQuestion === (props.questCount - 1)) {
+        socket.emit('showModal', {  
+          room: props.vRoomId
+        })
+      } else {
+        socket.emit('showUniversalModal', {  
+          room: props.vRoomId,
+          message: "Riešenie je správne!",
+          color: "text-secondary"
+        })
+      }
     } else {
-      alert("Riesenie nie je spravne")
+      socket.emit('showUniversalModal', {  
+        room: props.vRoomId,
+        message: "Riešenie nie je správne!",
+        color: "text-danger"
+      })
     }
   }
   
@@ -144,11 +181,30 @@ const Solution = (props) => {
         )
   })
   
-  
+  const processOnHide = () => {
+    setModalShow(false)
+    
+    Axios.post("http://localhost:3001/vroom/issent",{
+      id: props.vRoomId
+    })
+
+    navigate("/")
+  }
       
 
   return (
     <div className='vr--main--solution'>
+      <UsersModal 
+        show={modalShow}
+        onHide={processOnHide}
+        activeStudents={props.activeStudents}
+      />
+      < UniversalModal
+          show={universalModalShow}
+          color={color}
+          message={message}
+          onHide={() => setUniversalModalShow(false)}
+        />
       <div className='vr--solution--inputs'>
         {questionData}
       </div>

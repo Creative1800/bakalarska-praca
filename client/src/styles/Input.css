@@ -86,8 +86,17 @@
   background-color: transparent;
 }
 .input--modal--imgs::-webkit-scrollbar-thumb{
-  background-color: var(--secondary);
+  background-color: var(--primary);
   border-radius: 20px;
   border: 6px solid transparent;
   background-clip: content-box;
+}
+
+.input--text {
+  margin: 0;
+  margin-left: 20px;
+
+  color: var(--white);
+  width: 100%;
+  text-align: center;
 }

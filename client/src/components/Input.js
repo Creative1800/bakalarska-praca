@@ -72,10 +72,10 @@ const Input = (props) => {
     props.handleChange(props.id, inputValue);
   };
 
-  const handle = () => {
+  const handlePicClick = () => {
     const elem = document.getElementsByClassName("input--comp");
     let rect = elem[props.id].getBoundingClientRect();
-    props.toggleModal(rect.bottom, rect.left, props.id)
+    props.toggleModal(rect.bottom, rect.left, props.id, props.inputContent.text)
     
   }
   
@@ -88,14 +88,14 @@ const Input = (props) => {
           props.picsArray[props.id] !== undefined && 
           props.picsArray[props.id] !== null ?
           <img 
-            onClick={disabledPicInput ? null : handle} 
+            onClick={disabledPicInput ? null : handlePicClick} 
             className='input--img input--img--inserted' 
             id='four'
             src={require(`../assets/piktograms/${props.picsArray[props.id]}.png`)}
           />
           :
           <img 
-            onClick={disabledPicInput ? null : handle} 
+            onClick={disabledPicInput ? null : handlePicClick} 
             className='input--img input--insert--image'
             id='four'
             src={insertImage}

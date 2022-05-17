@@ -13,10 +13,12 @@ const VRoomContent = (props) => {
   const [username, setUsername] = useState('');
   Axios.defaults.withCredentials = true;
 
-  const [isModalOpened, setIsModalOpened] = useState(false);
+  const [ isModalOpened, setIsModalOpened] = useState(false);
   const [ modalPositions, setModalPositions ] = useState([])
   const [ picNameFromModal, setPicNameFromModal ] = useState('');
   const [ inputId, setInputId ] = useState();
+  const [ inputText, setInputText ] = useState("")
+  const [ activeStudents, setActiveStudents ] = useState([])
 
   const [ isModalOpenedArray, updateIsModalOpenedArray ] = useState([])
 
@@ -27,6 +29,15 @@ const VRoomContent = (props) => {
       if (response.data.loggedIn === true){
         setUsername(response.data.user)
       } 
+    })
+  }, [])
+  
+  useEffect(() => {
+    Axios.post("http://localhost:3001/vroom/activeusers", {
+      id: props.vRoomId
+    })
+    .then((response) => {
+      setActiveStudents(response.data.rows[0].active_students)
     })
   }, [])
   
@@ -49,7 +60,7 @@ const VRoomContent = (props) => {
   
   
 
-  const toggleModal = (bottomPosition, leftPosition, inputId) => {
+  const toggleModal = (bottomPosition, leftPosition, inputId, inputText) => {
     setIsModalOpened(prevState => {
       let newArr = [...isModalOpenedArray];
       newArr[inputId] = {
@@ -71,6 +82,7 @@ const VRoomContent = (props) => {
     })
     setModalPositions([leftPosition, bottomPosition]);
     setInputId(inputId)
+    setInputText(inputText)
 
   }
 
@@ -99,7 +111,7 @@ const VRoomContent = (props) => {
               modalPositions={modalPositions}
               getPicNameIdFromModal={getPicNameIdFromModal}
               inputId={inputId}
-              
+              inputText={inputText}
             />
             : <></>
           }
@@ -116,6 +128,8 @@ const VRoomContent = (props) => {
             isModalOpenedArray={isModalOpenedArray}
             updatePicsArray={props.updatePicsArray}
             updateSolutionArray={props.updateSolutionArray}
+            questCount={props.questCount}
+            activeStudents={activeStudents}
           />}
         </main>
         <ActiveUsers  

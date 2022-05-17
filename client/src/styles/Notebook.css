@@ -31,9 +31,22 @@
   font-size: .85rem;
 }
 
+.notebook--p2 {
+  font-weight: 500;
+  margin-bottom: 1em;
+  font-size: .85rem;
+}
+
 .notebook--p3 {
+  color: var(--secondary);
+  font-size: 1.1rem;
+  margin-bottom: 1.8em;
+}
+
+.notebook--p4 {
   color: red;
-  margin-bottom: 2.8em;
+  font-size: 1.1rem;
+  margin-bottom: 1.8em;
 }
 
 .notebook--button {
@@ -45,4 +58,9 @@
   font-weight: 700;
   border: 3px solid var(--primary);
   border-radius: 25px;
+}
+
+.from--to {
+  color: var(--secondary);
+  font-weight: 700;
 }

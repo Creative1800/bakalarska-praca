@@ -3,6 +3,8 @@ import '../styles/App.css';
 import { CgClose } from "react-icons/cg";
 
 const InputModal = (props) => {
+
+  console.log(props)
     
   useEffect(() => {
     const elem = document.getElementById("input--modal");
@@ -53,6 +55,7 @@ const InputModal = (props) => {
     { 
       <div className='input--modal' id='input--modal'>
         <div className='input--modal--header'>
+          <p className='input--text'>{props.inputText}</p>
           <CgClose 
             className='x--button' 
             onClick={() => props.toggleModal(undefined, undefined, props.inputId)}

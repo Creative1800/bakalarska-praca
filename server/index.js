@@ -87,6 +87,14 @@ io.on("connection", (socket) => {
     return false
   }
 
+  socket.on('showUniversalModal' , data => {
+    io.to(data.room).emit('showUniversalModal', data)
+  })
+  
+  socket.on('showModal' , data => {
+    io.to(data.room).emit('showModal', data)
+  })
+
   socket.on('inputClick', (data) => {
     socket.to(data.isInputInteracted[data.inputId].room).emit('inputClick', data)
   })

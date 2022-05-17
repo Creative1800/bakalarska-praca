@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
   if (req.session.user) {
     res.send({
       loggedIn: true, 
-      user: req.session.user.rows[0].username
+      user: req.session.user.rows[0].username.toLowerCase()
     })
   } else {
     res.send({ loggedIn: false })
@@ -34,7 +34,7 @@ router.delete("/", (req, res) => {
 })
 
 router.post("/", (req, res) => { 
-  const username = req.body.username;
+  const username = req.body.username.toLowerCase();
   const password = req.body.password;
   
   client.query(
@@ -49,7 +49,7 @@ router.post("/", (req, res) => {
         bcrypt.compare(password, result.rows[0].password, (error, response) => {
           if (response) {
             req.session.user = result;
-            res.send(result.rows[0].username);
+            res.send(result.rows[0].username.toLowerCase());
           } else {
             res.send({ message: "Zlé meno alebo heslo!"});
           }
