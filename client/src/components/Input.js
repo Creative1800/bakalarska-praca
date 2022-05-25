@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import insertImage from '../assets/1.png';
-import '../styles/InputModal.scss';
 
 const Input = (props) => {
   const [disabledInput, setDisabledInput] = useState(false);
   const [disabledPicInput, setDisabledPicInput] = useState(false);
   const [ inputValue, setInputValue ] = useState(props.solutionArray[props.id])
-
 
   useEffect(() => {
     setInputValue(props.solutionArray[props.id])

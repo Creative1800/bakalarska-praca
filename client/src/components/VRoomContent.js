@@ -22,7 +22,6 @@ const VRoomContent = (props) => {
 
   const [ isModalOpenedArray, updateIsModalOpenedArray ] = useState([])
 
-
   useEffect(() => {
     Axios.get("http://localhost:3001/login")
     .then((response) => {

@@ -4,7 +4,6 @@ import { CgClose } from "react-icons/cg";
 
 const InputModal = (props) => {
 
-  console.log(props)
     
   useEffect(() => {
     const elem = document.getElementById("input--modal");
@@ -49,7 +48,6 @@ const InputModal = (props) => {
     )
   } )
   
-  console.log(props)
   return (
     <>
     { 

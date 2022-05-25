@@ -21,11 +21,9 @@ function Register(props) {
       if(response.data.isRegSuccessful === true) {
         setShowDangerAlert(false)
         setShowSuccessAlert(true)
-        console.log(response.data.isRegSuccessful);
       } else {
         setShowSuccessAlert(false)
         setShowDangerAlert(true)
-        console.log(response.data.isRegSuccessful);
       }
     })
   }

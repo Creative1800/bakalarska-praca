@@ -27,8 +27,6 @@ const VirtualRoomPage = (props) => {
   const [users, updateUsers] = useState([])
   const [ username, setUsername ] = useState("")
 
-  
-
   useEffect(()=> {
     socket.on('questionChanged', function(data) {
       setCurrentQuestion(data.questionData.current_question)
@@ -83,24 +81,7 @@ const VirtualRoomPage = (props) => {
     })
   }, [])
 
-  
-
-  if(isLoading || isLoading2 ) {
-    return (
-      <div className='vr--main--question'>
-        
-      </div>
-    )
-  }
-
-
   let shuffledArrayOfPictograms = [];
-  if(vRoomData[currentQuestion]) {
-    for(let i = 0; i < vRoomData[currentQuestion].question_content.content.length; i++) {
-      shuffledArrayOfPictograms[i] = vRoomData[currentQuestion].question_content.content[i].pic
-    }
-  }
-
 
   const randomModalImages = (array)=>{
     for (let i = array.length - 1; i > 0; i--) {
@@ -116,7 +97,24 @@ const VirtualRoomPage = (props) => {
     shuffledArrayOfPictograms = uniqueChars
   }
 
-  randomModalImages(shuffledArrayOfPictograms)
+  
+
+  if(isLoading || isLoading2 ) {
+    return (
+      <div className='vr--main--question'>
+        
+      </div>
+    )
+  }
+
+
+  
+  if(vRoomData[currentQuestion]) {
+    for(let i = 0; i < vRoomData[currentQuestion].question_content.content.length; i++) {
+      shuffledArrayOfPictograms[i] = vRoomData[currentQuestion].question_content.content[i].pic
+    }
+  }
+
 
   const addPicsArray = (id, name) => {
     let newArr = [...picsArray];

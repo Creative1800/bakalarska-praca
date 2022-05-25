@@ -30,11 +30,7 @@ const Notebook = (props) => {
   }, [])
 
   const isUserLoggedIn = () => {
-    if (username != '') {
-/*       Axios.post("http://localhost:3001/activeusers/1", {
-        user: username,
-        vRoomId: props.id
-      }) */
+    if (username !== '') {
       navigate(`/virtualroom/${props.id}`, {state:{username: username}});
 
       joinRoom()

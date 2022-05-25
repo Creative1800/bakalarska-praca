@@ -1,11 +1,9 @@
 const express = require('express');
 const cors = require("cors");
-const fileUpload = require('express-fileupload');
 const {Server} = require('socket.io')
 const http = require('http');
 
 
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
@@ -25,9 +23,11 @@ const server = http.createServer(app);
 
 const io = new Server(server,{ 
   cors: {
-    origin: 'http://localhost:3000'
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
   }
-}) //in case server and client run on different urls
+}) 
 
 const users = []
 const solutionsArray = []
@@ -165,7 +165,6 @@ server.listen(server_port, () => {
 
 
 
-
 app.use(express.json());
 app.use(cors({
   origin: ["http://localhost:3000"],
@@ -184,7 +183,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: 60 * 60 * 1000 // cookie session will last 1 hour
+    expires: 60 * 60 * 10000 // cookie session will last 10 hours
   }
 }))
 

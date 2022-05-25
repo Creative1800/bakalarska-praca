@@ -21,7 +21,6 @@ const Solution = (props) => {
 
   useEffect(() => {
     socket.on('questionChanged', (data) => {
-      console.log(data)
       props.updatePicsArray(data.solutionArray)
       props.updateSolutionArray(data.solutionArray)
     })
@@ -33,11 +32,16 @@ const Solution = (props) => {
         setIsInputInteracted(data.isInputInteracted) 
       }
     })
+   
+  },[socket]) 
+  
+  useEffect(()=> {
     socket.on('inputChange', function(data) {
       props.updateSolutionArray(data.solutionArray)
-    })    
-  },[isInputInteracted, props.solutionArray]) 
+    })   
+  },[socket]) 
   
+
   useEffect(()=> {
     socket.on('showUniversalModal', function(data) {
       setUniversalModalShow(true)
@@ -87,22 +91,26 @@ const Solution = (props) => {
   });
 
   const updateInputValue = (id) => {
-    if(props.questionContent.type) {
+    /* if(props.questionContent.type) {
       socket.emit(
         'inputChange', {  
           questionType: props.questionContent.type,
           room: (props.vRoomId).toString(),
+          inputId: id,
           solutionArray: props.picsArray 
       })
-    } else {
+    } else { */
       socket.emit(
         'inputChange', {  
           questionType: props.questionContent.type,
           room: (props.vRoomId).toString(),
-          solutionArray: props.solutionArray  
+          inputId: id,
+          inputValue: props.solutionArray[id],
+          solutionArray: props.solutionArray 
       })
-    }
-    
+    //}
+
+      
   }
 
   const checkSolutions = () => {
