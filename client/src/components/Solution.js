@@ -44,6 +44,7 @@ const Solution = (props) => {
 
   useEffect(()=> {
     socket.on('showUniversalModal', function(data) {
+      console.log(data)
       setUniversalModalShow(true)
       setMessage(data.message)
       setColor(data.color)

@@ -20,8 +20,6 @@ router.get("/", (req, res) => {
   })
 })
 
-
-
 client.end;
 
 module.exports = router

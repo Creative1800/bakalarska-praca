@@ -18,6 +18,7 @@ const Notebook = (props) => {
   const endDateTime = `${endDate} ${endTime.getHours()}:${endTime.getMinutes()}`; 
 
   const [modalShow, setModalShow] = React.useState(false);
+  const [message, setMessage] = useState("")
   
  
   useEffect(() => {
@@ -75,14 +76,23 @@ const Notebook = (props) => {
           <p className='notebook--p notebook--p4' >Neodoslané</p>
         }
         { props.isSent ?
-          <button className='notebook--button' onClick={() => setModalShow(true)}>
+          <button 
+            className='notebook--button' 
+            onClick={() => {
+              setMessage(`Zvolená miestnosť už bola odoslaná!`)
+              setModalShow(true)
+              }
+            }
+          >
             Vstúpiť do testu
           </button> :
            <button 
             onClick={() => {
               isTestActive() ?
               isUserLoggedIn() :
-              alert(`Test ${props.testCounter} je neaktívny!`)
+              setMessage(`Test ${props.testCounter} je neaktívny!`)
+              setModalShow(true)
+              //alert(`Test ${props.testCounter} je neaktívny!`)
             }} 
             className='notebook--button'
           >
@@ -93,7 +103,7 @@ const Notebook = (props) => {
         < UniversalModal
           show={modalShow}
           color={"text-danger"}
-          message={"Zvolená miestnosť už bola odoslaná!"}
+          message={message}
           onHide={() => setModalShow(false)}
         />
       </div>

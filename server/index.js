@@ -69,8 +69,8 @@ io.on("connection", (socket) => {
         })
     } else {
       socket.to(data.room).emit(
-        'questionChanged', 
-        {questionData: data , solutionArray: []
+        'questionChanged', {
+          questionData: data , solutionArray: []
         })
     }    
   })
